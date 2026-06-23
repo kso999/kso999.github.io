@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习导航站</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            background-image: url('https://telegraph-image-92x.pages.dev/file/99622799913c7ed749ec0-f415e3d82f5564f2f3.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        .page-item.active { display: block; }
+
+        #page-home {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #page-home.active { display: flex; }
+        .nav-container {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(6px);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            padding: 60px 50px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .nav-container:hover {
+            transform: translateY(-3px);
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1e293b;
+            letter-spacing: 4px;
+            margin-bottom: 50px;
+            position: relative;
+            display: inline-block;
+        }
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: #2563eb;
+            border-radius: 3px;
+        }
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 20px 30px;
+            font-size: 18px;
+            font-weight: 500;
+            border-radius: 16px;
+            background: #f8fafc;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+        }
+        .nav-btn:hover {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+        .nav-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px -5px rgba(37, 99, 235, 0.4);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 16px;
+            left: 20px;
+            z-index: 10;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(6px);
+            color: #475569;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+        .back-btn:hover {
+            background: #2563eb;
+            color: white;
+            transform: translateX(-2px);
+        }
+
+        .page-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #f4f7fa;
+        }
+
+        @media (max-width: 500px) {
+            .nav-container { padding: 40px 25px; }
+            h1 { font-size: 24px; margin-bottom: 40px; }
+            .nav-btn { font-size: 16px; padding: 16px 20px; }
+            .back-btn { top: 12px; left: 12px; padding: 6px 14px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <!-- 首页导航 -->
+        <div id="page-home" class="page-item active">
+            <div class="nav-container">
+                <h1>导 航</h1>
+                <div class="nav-links">
+                    <button class="nav-btn" onclick="switchPage('mindmap')">当代文学史思维导图</button>
+                    <button class="nav-btn" onclick="switchPage('quiz')">当代文学史刷题</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 思维导图功能页（相对路径，同仓库同级） -->
+        <div id="page-mindmap" class="page-item">
+            <button class="back-btn" onclick="switchPage('home')">← 返回首页</button>
+            <iframe class="page-frame" src="mindmap.html" loading="lazy"></iframe>
+        </div>
+
+        <!-- 刷题功能页（相对路径，同仓库同级） -->
+        <div id="page-quiz" class="page-item">
+            <button class="back-btn" onclick="switchPage('home')">← 返回首页</button>
+            <iframe class="page-frame" src="quiz.html" loading="lazy"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const pages = document.querySelectorAll('.page-item');
+        function switchPage(pageName) {
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === `page-${pageName}`);
+            });
+        }
+    </script>
+</body>
+</html>
