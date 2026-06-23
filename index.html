@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .nav-container {
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            padding: 60px 50px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .nav-container:hover {
+            transform: translateY(-3px);
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1e293b;
+            letter-spacing: 4px;
+            margin-bottom: 50px;
+            position: relative;
+            display: inline-block;
+        }
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: #2563eb;
+            border-radius: 3px;
+        }
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 20px 30px;
+            font-size: 18px;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 16px;
+            background: #f8fafc;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-btn:hover {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+        .nav-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px -5px rgba(37, 99, 235, 0.4);
+        }
+        /* 占位状态，未来可删除 */
+        .nav-btn[href="#"]::after {
+            content: " (即将上线)";
+            font-size: 12px;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-left: 6px;
+        }
+        @media (max-width: 500px) {
+            .nav-container {
+                padding: 40px 25px;
+            }
+            h1 {
+                font-size: 24px;
+                margin-bottom: 40px;
+            }
+            .nav-btn {
+                font-size: 16px;
+                padding: 16px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <h1>导 航</h1>
+        <div class="nav-links">
+            <!-- 将来替换 href="#" 为实际网址，例如 href="https://xxxx.com" -->
+            <a href="#" class="nav-btn" id="btnMap">当代文学史思维导图</a>
+            <a href="#" class="nav-btn" id="btnQuiz">当代文学史刷题</a>
+        </div>
+    </div>
+</body>
+</html>
