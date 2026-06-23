@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>当代文学史 · 思维导图（考试范围版）</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f4f7fa;
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .mindmap {
+            max-width: 1000px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            padding: 30px 25px 40px;
+            transition: all 0.2s;
+        }
+
+        .mindmap > details > summary {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e293b;
+            padding: 12px 18px 12px 22px;
+            background: #eef2f6;
+            border-radius: 16px;
+            border-left: 6px solid #2563eb;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+            transition: background 0.2s;
+            margin-bottom: 8px;
+        }
+        .mindmap > details > summary:hover {
+            background: #e2e8f0;
+        }
+        .mindmap > details > summary::-webkit-details-marker {
+            display: none;
+        }
+        .mindmap > details > summary::before {
+            content: "📖 ";
+        }
+
+        .branch {
+            padding-left: 18px;
+            margin-top: 8px;
+            border-left: 2px solid #d1d9e6;
+        }
+
+        .branch > details {
+            margin-top: 14px;
+        }
+        .branch > details > summary {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+            padding: 8px 14px 8px 18px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+            transition: background 0.15s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .branch > details > summary:hover {
+            background: #eef2ff;
+        }
+        .branch > details > summary::-webkit-details-marker {
+            display: none;
+        }
+        .branch > details > summary::before {
+            content: "▸ ";
+            color: #3b82f6;
+            font-weight: 300;
+        }
+        .branch > details[open] > summary::before {
+            content: "▾ ";
+        }
+
+        .sub-branch {
+            padding-left: 20px;
+            margin-top: 6px;
+            border-left: 2px dashed #cbd5e1;
+        }
+        .sub-branch > details {
+            margin-top: 8px;
+        }
+        .sub-branch > details > summary {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1e293b;
+            padding: 5px 12px 5px 16px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            border-left: 3px solid #94a3b8;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+            transition: background 0.15s;
+        }
+        .sub-branch > details > summary:hover {
+            background: #e2e8f0;
+        }
+        .sub-branch > details > summary::-webkit-details-marker {
+            display: none;
+        }
+        .sub-branch > details > summary::before {
+            content: "▪ ";
+            color: #64748b;
+        }
+        .sub-branch > details[open] > summary::before {
+            content: "▫ ";
+        }
+
+        .content-list {
+            padding-left: 28px;
+            margin: 6px 0 4px 0;
+            list-style: none;
+        }
+        .content-list li {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #334155;
+            padding: 4px 12px 4px 18px;
+            margin: 3px 0;
+            background: #fafcff;
+            border-radius: 6px;
+            border-left: 2px solid #dbeafe;
+            position: relative;
+        }
+        .content-list li::before {
+            content: "·";
+            color: #2563eb;
+            font-weight: 700;
+            position: absolute;
+            left: 2px;
+        }
+        .content-list li strong {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 0 8px;
+            border-radius: 12px;
+            margin-left: 6px;
+            vertical-align: middle;
+            letter-spacing: 0.3px;
+        }
+        .tag-essay {
+            background: #fce7f3;
+            color: #b91c1c;
+        }
+        .tag-explanation {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .term-block {
+            padding-left: 20px;
+            margin-top: 8px;
+            border-left: 2px solid #e2e8f0;
+        }
+        .term-block details {
+            margin-top: 6px;
+        }
+        .term-block details > summary {
+            font-size: 14px;
+            font-weight: 500;
+            color: #0f172a;
+            padding: 4px 12px 4px 16px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid #8b5cf6;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+            transition: background 0.1s;
+        }
+        .term-block details > summary:hover {
+            background: #eef2ff;
+        }
+        .term-block details > summary::-webkit-details-marker {
+            display: none;
+        }
+        .term-block details > summary::before {
+            content: "📌 ";
+            color: #8b5cf6;
+        }
+        .term-block details[open] > summary::before {
+            content: "📖 ";
+        }
+        .term-block details > div {
+            padding: 8px 16px 10px 28px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #334155;
+            background: #fafcff;
+            border-radius: 0 0 6px 6px;
+            border-left: 2px solid #dbeafe;
+            margin-left: 8px;
+        }
+
+        @media (max-width: 640px) {
+            .mindmap { padding: 16px 12px; }
+            .mindmap > details > summary { font-size: 20px; padding: 10px 14px; }
+            .branch > details > summary { font-size: 16px; }
+            .sub-branch > details > summary { font-size: 14px; }
+            .content-list li { font-size: 13px; padding: 4px 8px 4px 16px; }
+            .branch { padding-left: 8px; }
+            .sub-branch { padding-left: 10px; }
+            .content-list { padding-left: 14px; }
+            .term-block { padding-left: 10px; }
+            .term-block details > div { padding: 6px 10px 8px 18px; font-size: 13px; }
+        }
+
+        summary {
+            transition: all 0.1s ease;
+        }
+        summary:active {
+            transform: scale(0.99);
+        }
+    </style>
+</head>
+<body>
+<div class="mindmap">
+    <details open>
+        <summary>当代文学史（考试范围·不含第十六章）</summary>
+        <div class="branch">
+
+            <!-- ========== 第十五章 ========== -->
+            <details open>
+                <summary>第十五章 分裂的文学世界（50-70年代文学）</summary>
+                <ul class="content-list">
+                    <li><strong>二、小说创作情况</strong>：“文革”期间正式出版物中的小说，数量锐减，题材高度政治化，多为“遵命文学”，艺术粗糙，是文学在特殊年代艰难存续的缩影。</li>
+                </ul>
+                <!-- 本章无专门名词解释，因为范围仅含“第二节” -->
+            </details>
+
+            <!-- ========== 第十七章 ========== -->
+            <details open>
+                <summary>第十七章 80年代文学概况</summary>
+                <div class="sub-branch">
+                    <details>
+                        <summary>一、80年代文学过程</summary>
+                        <ul class="content-list">
+                            <li><strong>1976-1978年</strong>：拨乱反正与文学复苏期。</li>
+                            <li>“<strong>伤痕文学</strong>”、“<strong>反思文学</strong>”和“<strong>改革文学</strong>”先后涌现。</li>
+                            <li><strong>1985年前后</strong>：文学的“拐点”，寻根文学、先锋文学、新写实等多元思潮并起。</li>
+                        </ul>
+                    </details>
+                    <details>
+                        <summary>二、话语资源</summary>
+                        <ul class="content-list">
+                            <li>对“<strong>文革</strong>”的反思、<strong>西方现代主义</strong>译介、<strong>五四启蒙传统</strong>的重新发现。</li>
+                        </ul>
+                    </details>
+                    <details>
+                        <summary>三、文学历史的“重写” <span class="tag">简答</span></summary>
+                        <ul class="content-list">
+                            <li><strong>标准</strong>：颠覆政治标准，强调<strong>审美独立性</strong>。</li>
+                            <li><strong>规范</strong>：重新评价被遮蔽的作家（沈从文、张爱玲等）。</li>
+                            <li><strong>成果</strong>：“重写文学史”专栏及一批新文学史著作。</li>
+                        </ul>
+                    </details>
+                </div>
+                <details class="sub-branch" open>
+                    <summary>📘 本章名词解释</summary>
+                    <div class="term-block">
+                        <details><summary>“伤痕文学”</summary><div>70年代末出现的文学思潮，以揭露“文革”精神创伤为主题，开山作卢新华《伤痕》。</div></details>
+                        <details><summary>“反思文学”</summary><div>在伤痕文学基础上追问历史根源，代表有鲁彦周《天云山传奇》、张贤亮《灵与肉》。</div></details>
+                        <details><summary>“改革文学”</summary><div>70年代末至80年代初以工业/农村改革为题材，开山作蒋子龙《乔厂长上任记》，代表作有高晓声“陈奂生系列”、张洁《沉重的翅膀》等。</div></details>
+                        <details><summary>“高晓声”</summary><div>改革文学代表作家，代表作“陈奂生系列”（《陈奂生上城》等）。塑造了新旧交替时期农民典型，语言质朴幽默，反映农村改革。</div></details>
+                        <details><summary>“乔梁” / “乔厂长”</summary><div>指蒋子龙《乔厂长上任记》中的主人公乔光朴，是改革文学中“改革家”形象的典型代表，寓意锐意进取、雷厉风行的工业改革者。</div></details>
+                        <details><summary>“1985年前后” / “拐点”</summary><div>文学史认定的80年代文学转折年，此后寻根、先锋、新写实等多元思潮爆发，文学从社会工具走向审美自主。</div></details>
+                        <details><summary>“重写文学史”</summary><div>80年代中后期实践，1988年《上海文论》专栏，颠覆政治标准，强调审美，重新评价沈从文、张爱玲等。</div></details>
+                    </div>
+                </details>
+            </details>
+
+            <!-- ========== 第十八章 ========== -->
+            <details open>
+                <summary>第十八章 “归来者”的诗</summary>
+                <div class="sub-branch">
+                    <details>
+                        <summary>一、诗歌变革</summary>
+                        <ul class="content-list"><li>政治诗仍占相当比例，但允许批判与个人体验加入。</li></ul>
+                    </details>
+                    <details>
+                        <summary>二、“归来者”的诗</summary>
+                        <ul class="content-list">
+                            <li><strong>代表诗人</strong>：艾青、公刘、白桦、邵燕祥、流沙河等。</li>
+                            <li><strong>特征</strong>：苦难诉说、历史反思、未来期望；写实风格。</li>
+                            <li><strong>意义</strong>：连接十七年诗歌与新时期诗歌，为朦胧诗铺垫。</li>
+                        </ul>
+                    </details>
+                </div>
+                <details class="sub-branch" open>
+                    <summary>📘 名词解释</summary>
+                    <div class="term-block">
+                        <details><summary>“归来者”</summary><div>“文革”后重返诗坛的复出诗人群体，包括艾青、公刘等，作品充满历史反思。</div></details>
+                    </div>
+                </details>
+            </details>
+
+            <!-- ========== 第十九章 ========== -->
+            <details open>
+                <summary>第十九章 新诗潮</summary>
+                <div class="sub-branch">
+                    <details>
+                        <summary>一、朦胧诗的发生 <span class="tag tag-essay">论述</span></summary>
+                        <ul class="content-list">
+                            <li><strong>时间</strong>：70年代末至80年代初。</li>
+                            <li><strong>核心</strong>：《今天》杂志，代表诗人北岛、舒婷、顾城、芒克、多多、杨炼。</li>
+                            <li><strong>特征</strong>：主体意识觉醒、意象化象征化、陌生化语言、呼唤人道主义。</li>
+                            <li><strong>意义</strong>：当代新诗革新起点，从工具论向本体论转变。</li>
+                        </ul>
+                    </details>
+                    <details>
+                        <summary>二、“第三代诗” <span class="tag tag-explanation">赏析/论述/名解</span></summary>
+                        <ul class="content-list">
+                            <li><strong>时间</strong>：80年代中后期。</li>
+                            <li><strong>代表</strong>：于坚、韩东、海子等；群体“他们”、“非非”、“莽汉”。</li>
+                            <li><strong>特征</strong>：反叛朦胧诗崇高，追求口语化、日常化、解构。</li>
+                            <li><strong>意义</strong>：诗歌平民化、多元化。</li>
+                        </ul>
+                    </details>
+                </div>
+                <details class="sub-branch" open>
+                    <summary>📘 名词解释</summary>
+                    <div class="term-block">
+                        <details><summary>“朦胧诗”</summary><div>70年代末至80年代初兴起的诗歌潮流，以《今天》为核心，强调主体意识、意象象征化，代表北岛、舒婷。</div></details>
+                        <details><summary>“地下诗歌”</summary><div>“文革”期间非公开创作流传的诗歌，以“白洋淀诗群”为代表，为朦胧诗积蓄力量。</div></details>
+                        <details><summary>“白洋淀诗群”</summary><div>60年代末、70年代初河北白洋淀知青诗人群体，代表芒克、多多，是“地下诗歌”重要组成，作品手抄本流传。</div></details>
+                        <details><summary>“第三代诗”</summary><div>80年代中后期的先锋诗人群体，反叛朦胧诗崇高，追求口语化、日常化，代表于坚、韩东。</div></details>
+                    </div>
+                </details>
+            </details>
+
+            <!-- ========== 第二十章 ========== -->
+            <details open>
+                <summary>第二十章 历史创伤的记忆</summary>
+                <div class="sub-branch">
+                    <details>
+                        <summary>一、张贤亮 <span class="tag">简答</span></summary>
+                        <ul class="content-list">
+                            <li><strong>代表作</strong>：《灵与肉》《绿化树》《男人的一半是女人》。</li>
+                            <li><strong>主题</strong>：知识分子苦难史与心灵史，大墙文学。</li>
+                            <li><strong>特色</strong>：细腻心理描写，写实与象征结合。</li>
+                        </ul>
+                    </details>
+                    <details>
+                        <summary>二、三部中篇小说 <span class="tag">简答</span></summary>
+                        <ul class="content-list">
+                            <li>《波动》（北岛）、《晚霞消失的时候》（礼平）、《公开的情书》（靳凡）。</li>
+                            <li>均为“文革”后期手抄本，表达青年一代精神探索。</li>
+                        </ul>
+                    </details>
+                    <details>
+                        <summary>四、张承志 <span class="tag">名词解释</span></summary>
+                        <ul class="content-list">
+                            <li>代表作《黑骏马》《北方的河》。</li>
+                            <li>特征：理想主义、浪漫主义、文化寻根（草原/回族文化），语言诗意。</li>
+                        </ul>
+                    </details>
+                </div>
+                <details class="sub-branch" open>
+                    <summary>📘 名词解释</summary>
+                    <div class="term-block">
+                        <details><summary>“大墙文学”</summary><div>以“文革”中监狱、劳改农场为背景，书写知识分子苦难与精神挣扎，代表张贤亮。</div></details>
+                        <details><summary>“张承志”</summary><div>80年代重要作家，代表作《黑骏马》《北方的河》，充满理想主义和文化寻根意识。</div></details>
+                    </div>
+                </details>
+            </details>
+
+            <!-- ========== 第二十一章 ========== -->
+            <details open>
+                <summary>第二十一章 80年代中后期的小说（一）</summary>
+                <div class="sub-branch">
+                    <details>
+                        <summary>一、寻根文学 <span class="tag">简答</span></summary>
+                        <ul class="content-list">
+                            <li><strong>社会背景</strong>：改革开放后面对西方文化冲击，回归民族传统。</li>
+                            <li><strong>文学背景</strong>：超越伤痕反思，在文化层面思考，受拉美魔幻现实主义影响。</li>
+                            <li><strong>代表</strong>：韩少功《爸爸爸》、阿城《棋王》、贾平凹“商州”系列、王安忆《小鲍庄》。</li>
+                        </ul>
+                    </details>
+                    <details>
+                        <summary>四、莫言、残雪 <span class="tag">简答</span></summary>
+                        <ul class="content-list">
+                            <li><strong>莫言</strong>：《红高粱家族》《透明的红萝卜》，“高密东北乡”，魔幻与现实融合。</li>
+                            <li><strong>残雪</strong>：《山上的小屋》《苍老的浮云》，梦魇叙事，探索人性异化。</li>
+                        </ul>
+                    </details>
+                </div>
+                <details class="sub-branch" open>
+                    <summary>📘 名词解释</summary>
+                    <div class="term-block">
+                        <details><summary>“寻根文学”</summary><div>80年代中期思潮，以韩少功《文学的“根”》为宣言，代表有《爸爸爸》《棋王》等。</div></details>
+                        <details><summary>“莫言”</summary><div>以“高密东北乡”为文学王国，书写民间传奇与生命强力，语言狂放，融合魔幻与现实。</div></details>
+                        <details><summary>“残雪”</summary><div>先锋作家，代表作《山上的小屋》，以梦魇叙事探索人性异化。</div></details>
+                    </div>
+                </details>
+            </details>
+
+            <!-- ========== 第二十二章 ========== -->
+            <details open>
+                <summary>第二十二章 80年代中后期的小说（二）</summary>
+                <div class="sub-branch">
+                    <details>
+                        <summary>一、现代派文学 <span class="tag">名词解释</span></summary>
+                        <ul class="content-list">
+                            <li><strong>时间</strong>：80年代初中期。</li>
+                            <li><strong>特征</strong>：受西方现代主义影响，表现内心真实，打破线性叙事。</li>
+                            <li><strong>代表</strong>：王蒙《春之声》《蝴蝶》（意识流）、刘索拉《你别无选择》（黑色幽默）、徐星《无主题变奏》。</li>
+                        </ul>
+                    </details>
+                    <details>
+                        <summary>二、先锋小说</summary>
+                        <ul class="content-list">
+                            <li><strong>特征</strong>：形式主义实验，颠覆传统真实性。</li>
+                            <li><strong>余华</strong>：《十八岁出门远行》《现实一种》，冷静叙述暴力。</li>
+                            <li><strong>马原</strong>：《冈底斯的诱惑》《虚构》，元叙事。</li>
+                        </ul>
+                    </details>
+                    <details>
+                        <summary>三、新写实 <span class="tag">简答</span></summary>
+                        <ul class="content-list">
+                            <li><strong>与现实主义</strong>：仍写实，但不再追求典型化，以“零度情感”展示原生态。</li>
+                            <li><strong>代表</strong>：池莉《烦恼人生》、刘震云《一地鸡毛》、方方《风景》。</li>
+                        </ul>
+                    </details>
+                </div>
+                <details class="sub-branch" open>
+                    <summary>📘 名词解释</summary>
+                    <div class="term-block">
+                        <details><summary>“现代派文学”</summary><div>80年代初中期受西方现代主义影响的小说潮流，代表王蒙、刘索拉等。</div></details>
+                        <details><summary>“先锋小说”</summary><div>80年代中期以叙事革命为轴心的形式实验，代表马原、余华，开山作《冈底斯的诱惑》。</div></details>
+                        <details><summary>“新写实”</summary><div>80年代末文学倾向，以“零度情感”客观展示生活原生态，代表池莉、刘震云。</div></details>
+                    </div>
+                </details>
+            </details>
+
+            <!-- ========== 晚生代（独立） ========== -->
+            <details open>
+                <summary>晚生代（90年代小说新变）</summary>
+                <ul class="content-list">
+                    <li><strong>时间与背景</strong>：90年代中期被评论界命名。</li>
+                    <li><strong>命名者</strong>：陈晓明1995年《晚生代与九十年代的文学流向》。</li>
+                    <li><strong>别称</strong>：“新生代”、“60年代出生作家群”。</li>
+                    <li><strong>核心作家</strong>：韩东、朱文、毕飞宇、李洱、东西等。</li>
+                    <li><strong>创作特征</strong>：个人化叙事、都市题材、反叛姿态、价值中立。</li>
+                    <li><strong>代表作品</strong>：韩东《扎根》、朱文《我爱美元》等。</li>
+                </ul>
+                <details class="sub-branch" open>
+                    <summary>📘 名词解释</summary>
+                    <div class="term-block">
+                        <details><summary>“晚生代”</summary><div>90年代中期命名的作家群体，又称“新生代”，陈晓明首次概括。核心作家有韩东、朱文、毕飞宇等。创作上告别宏大历史，聚焦都市个体经验，语言平实仍保留实验性，呈现价值中立。</div></details>
+                    </div>
+                </details>
+            </details>
+
+            <!-- ========== 第二十三章 ========== -->
+            <details open>
+                <summary>第二十三章 女作家的小说</summary>
+                <div class="sub-branch">
+                    <details>
+                        <summary>论述题：几代作家的梳理 <span class="tag tag-essay">论述</span></summary>
+                        <ul class="content-list">
+                            <li><strong>第一代（“十七年”及“归来”的女作家）</strong>：如丁玲、茹志鹃。创作多在主流框架内，关注社会变革与女性命运交织，女性意识尚未自觉。</li>
+                            <li><strong>第二代（80年代崛起）</strong>：如张洁、王安忆、铁凝、谌容。女性意识从朦胧到自觉，关注情感、欲望与生存困境。张洁《爱，是不能忘记的》、王安忆“三恋”系列、铁凝《哦，香雪》、谌容《人到中年》。</li>
+                            <li><strong>第三代（90年代及以后）</strong>：如陈染、林白、海男。转向私密化、个人化写作，以身体写作、自传体表达内在经验。陈染《私人生活》、林白《一个人的战争》是代表。</li>
+                            <li><strong>梳理角度</strong>：主题演变（社会叙事→个人化）、形象塑造（女性意识觉醒深化）、艺术风格（写实→现代主义、身体写作多元探索）。</li>
+                        </ul>
+                    </details>
+                </div>
+                <details class="sub-branch" open>
+                    <summary>📘 名词解释</summary>
+                    <div class="term-block">
+                        <details><summary>“第一代女作家”</summary><div>活跃于“十七年”及新时期“归来”的女作家，如丁玲、茹志鹃，创作多在主流框架内。</div></details>
+                        <details><summary>“第二代女作家”</summary><div>80年代崛起的女作家群，如张洁、王安忆、铁凝、谌容，女性意识自觉，关注情感欲望。</div></details>
+                        <details><summary>“第三代女作家”</summary><div>90年代崛起的更年轻女作家，如陈染、林白、海男，转向私密化、个人化、身体写作。</div></details>
+                        <details><summary>“身体写作”</summary><div>90年代女性文学概念，女作家直接书写身体感觉、欲望，反抗男性话语遮蔽，代表林白、陈染。</div></details>
+                    </div>
+                </details>
+            </details>
+
+        </div> <!-- end branch -->
+    </details>
+</div> <!-- end mindmap -->
+</body>
+</html>

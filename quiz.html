@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>当代文学史 · 百题随机练（含收藏与编辑解析）</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', 'PingFang SC', Roboto, sans-serif; background: #f4f7fa; padding: 30px 20px; display: flex; justify-content: center; min-height: 100vh; }
+        .game-container { max-width: 850px; width: 100%; background: #fff; border-radius: 28px; box-shadow: 0 12px 40px rgba(0,0,0,0.08); padding: 32px 30px 40px; }
+        h1 { font-size: 24px; font-weight: 700; color: #1e293b; border-left: 6px solid #2563eb; padding-left: 16px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .header-buttons { display: flex; gap: 10px; }
+        .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; color: #475569; font-size: 14px; border-bottom: 1px solid #e9edf2; padding-bottom: 10px; }
+        .question-type { background: #dbeafe; color: #1d4ed8; padding: 4px 14px; border-radius: 30px; font-weight: 600; font-size: 13px; }
+        .question-text { font-size: 18px; font-weight: 500; color: #0f172a; margin-bottom: 22px; line-height: 1.6; }
+        .answer-area { margin-bottom: 20px; }
+        .answer-area label { display: block; margin: 8px 0 4px; font-size: 14px; color: #334155; }
+        .answer-area input[type="text"], .answer-area textarea, .answer-area select { width: 100%; padding: 12px 16px; border: 1px solid #d1d9e6; border-radius: 12px; font-size: 15px; background: #fafcff; transition: border 0.2s; font-family: inherit; }
+        .answer-area input[type="text"]:focus, .answer-area textarea:focus, .answer-area select:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+        .answer-area textarea { min-height: 80px; resize: vertical; }
+        .options-group { display: flex; flex-direction: column; gap: 8px; background: #f8fafc; padding: 14px 16px; border-radius: 12px; border: 1px solid #e9edf2; }
+        .options-group label { display: flex; align-items: center; gap: 12px; font-size: 15px; color: #1e293b; cursor: pointer; padding: 4px 0; }
+        .options-group input[type="radio"] { width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer; }
+        .action-bar { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; align-items: center; }
+        .btn { padding: 12px 28px; border: none; border-radius: 40px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s, transform 0.1s; flex: 1 1 auto; min-width: 100px; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-secondary { background: #e9edf2; color: #1e293b; }
+        .btn-secondary:hover { background: #d1d9e6; }
+        .btn-outline { background: transparent; color: #2563eb; border: 2px solid #2563eb; }
+        .btn-outline:hover { background: #eef2ff; }
+        .btn-fav { background: #fff0f0; color: #e11d48; border: 2px solid #fecdd3; }
+        .btn-fav:hover { background: #ffe4e6; }
+        .btn-fav.active { background: #fecdd3; color: #be123c; }
+        .answer-display { margin-top: 20px; padding: 16px 20px; background: #f0fdf4; border-left: 6px solid #22c55e; border-radius: 12px; color: #14532d; display: none; white-space: pre-wrap; word-break: break-word; line-height: 1.6; }
+        .answer-display.show { display: block; }
+        .explanation-box { margin-top: 16px; padding: 16px 20px; background: #f0f7ff; border-left: 6px solid #2563eb; border-radius: 12px; color: #1e293b; display: none; line-height: 1.7; font-size: 14px; position: relative; }
+        .explanation-box.show { display: block; }
+        .progress { font-weight: 500; color: #64748b; }
+        .footer-note { margin-top: 25px; text-align: center; font-size: 13px; color: #94a3b8; border-top: 1px solid #e9edf2; padding-top: 18px; }
+        /* 收藏列表 */
+        .fav-container { display: none; }
+        .fav-container.show { display: block; }
+        .fav-list { list-style: none; margin-top: 20px; }
+        .fav-item { background: #f8fafc; border: 1px solid #e9edf2; border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+        .fav-item .item-info { flex: 1 1 auto; min-width: 200px; }
+        .fav-item .item-type { font-size: 12px; color: #1d4ed8; background: #dbeafe; padding: 2px 12px; border-radius: 20px; }
+        .fav-item .item-question { font-weight: 500; margin: 8px 0; }
+        .fav-item .item-actions { display: flex; gap: 8px; }
+        .back-btn { margin-bottom: 10px; }
+        .edit-exp-btn, .save-exp-btn, .cancel-exp-btn { padding: 4px 12px !important; font-size: 13px !important; min-width: auto !important; flex: none !important; }
+        @media (max-width: 600px) {
+            .game-container { padding: 20px 16px; }
+            .question-text { font-size: 16px; }
+            .btn { padding: 10px 16px; font-size: 14px; min-width: 80px; }
+            .explanation-box { font-size: 13px; padding: 12px 14px; }
+            .action-bar { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container" id="mainContainer">
+    <!-- 普通答题视图 -->
+    <div id="quizView">
+        <h1>
+            📚 当代文学史 · 百题随机练
+            <div class="header-buttons">
+                <button class="btn btn-outline" id="viewFavBtn" style="padding:8px 20px; font-size:13px;">❤️ 收藏夹 (<span id="favCount">0</span>)</button>
+            </div>
+        </h1>
+        <div class="question-header">
+            <span class="question-type" id="typeBadge">选择题</span>
+            <span class="progress" id="progressText">1 / 100</span>
+        </div>
+        <div class="question-text" id="questionText">加载题目中...</div>
+        <div class="answer-area" id="answerArea"></div>
+        <div class="action-bar">
+            <button class="btn btn-outline" id="prevBtn">← 上一题</button>
+            <button class="btn btn-primary" id="submitBtn">提交</button>
+            <button class="btn btn-secondary" id="nextBtn">下一题 →</button>
+            <button class="btn btn-fav" id="favBtn">🤍 收藏</button>
+        </div>
+        <button class="btn btn-outline back-btn" id="backToFavFromQuiz" style="display:none; margin-top:10px;">← 返回收藏列表</button>
+        <div class="answer-display" id="answerDisplay"></div>
+        <div class="explanation-box" id="explanationBox"></div>
+        <div class="footer-note">✏️ 点击「提交」显示答案与解析（解析可编辑保存）</div>
+    </div>
+
+    <!-- 收藏列表视图 -->
+    <div id="favView" class="fav-container">
+        <h1>❤️ 我的收藏</h1>
+        <button class="btn btn-secondary back-btn" id="backToQuizBtn">← 返回练习</button>
+        <ul class="fav-list" id="favList"></ul>
+        <div class="footer-note" style="margin-top:20px;">点击「重做」进入答题模式；编辑过的解析在所有地方生效</div>
+    </div>
+</div>
+
+<script>
+    // ========== 题库（共91题）==========
+    var rawQuestions = [
+        {type:'选择题', question:'“文革”期间正式出版物中的小说在艺术上普遍呈现什么特点？', options:['高度创新','艺术粗糙','多元探索','写实细腻'], answer:'艺术粗糙', explanation:'“文革”期间正式出版的小说多为“遵命文学”，题材高度政治化，艺术上普遍粗糙。'},
+        {type:'填空题', question:'“文革”期间小说创作的特点是题材高度______。', answer:'政治化', explanation:'“文革”期间（1966—1976），中国文学进入全面政治化、工具化的极端时期。'},
+        {type:'选择题', question:'“文革”结束后，文学从政治附庸向自主转变，这一过程在文学史中被称为？', options:['转折','复兴','新时期','改革'], answer:'转折', explanation:'“转折”指“文革”结束后文学从政治附庸向文学自主的历史性转变。'},
+        {type:'选择题', question:'以下哪位不属于“归来者”诗人群体？', options:['艾青','公刘','北岛','流沙河'], answer:'北岛', explanation:'北岛是朦胧诗代表诗人。归来者诗人指在50年代反右或“文革”中受冲击、新时期复出的诗人。'},
+        {type:'选择题', question:'伤痕文学的开山之作是？', options:['《伤痕》','《天云山传奇》','《乔厂长上任记》','《灵与肉》'], answer:'《伤痕》', explanation:'《伤痕》是卢新华1978年发表的短篇小说，伤痕文学因此得名。'},
+        {type:'选择题', question:'改革文学的开山之作是？', options:['《乔厂长上任记》','《陈奂生上城》','《沉重的翅膀》','《新星》'], answer:'《乔厂长上任记》', explanation:'蒋子龙《乔厂长上任记》是改革文学的开山之作。'},
+        {type:'选择题', question:'以下哪部作品属于高晓声的“陈奂生系列”？', options:['《陈奂生上城》','《陈奂生出国》','《陈奂生进城》','《陈奂生打工》'], answer:'《陈奂生上城》', explanation:'高晓声“陈奂生系列”包括《陈奂生上城》《陈奂生转业》《陈奂生包产》等。'},
+        {type:'选择题', question:'“重写文学史”专栏的主持人是？', options:['陈思和、王晓明','洪子诚、陈晓明','王德威、李欧梵','钱理群、温儒敏'], answer:'陈思和、王晓明', explanation:'1988年《上海文论》开辟“重写文学史”专栏，由陈思和、王晓明主持。'},
+        {type:'选择题', question:'《乔厂长上任记》中的主人公“乔厂长”全名是？', options:['乔光朴','乔梁','乔峰','乔羽'], answer:'乔光朴', explanation:'乔光朴是改革文学中“改革家”形象的典型代表。'},
+        {type:'选择题', question:'“新时期文学”的主要思想资源之一是对哪个历史事件的反思？', options:['抗日战争','文化大革命','大跃进','五四运动'], answer:'文化大革命', explanation:'对“文革”的反思是“新时期文学”最核心的思想资源之一。'},
+        {type:'选择题', question:'80年代文学从“社会工具”走向“审美自主”的转折发生在哪一年前后？', options:['1978年','1980年','1985年','1989年'], answer:'1985年', explanation:'1985年前后寻根文学、先锋小说等多元思潮集中爆发，标志着文学转折。'},
+        {type:'选择题', question:'反思文学的代表作《天云山传奇》的作者是？', options:['鲁彦周','张贤亮','从维熙','王蒙'], answer:'鲁彦周', explanation:'鲁彦周的《天云山传奇》是反思文学重要作品。'},
+        {type:'填空题', question:'1985年前后被认为是文学史的“______”。', answer:'拐点', explanation:'1985年前后是80年代文学的转折年份。'},
+        {type:'填空题', question:'改革文学代表作家高晓声塑造的农民典型形象是______。', answer:'陈奂生', explanation:'高晓声塑造了陈奂生这一新旧交替时期农民典型形象。'},
+        {type:'名词解释', question:'伤痕文学', answer:'70年代末出现的文学思潮，以揭露“文革”给人们造成的精神创伤为主题，开山之作是卢新华《伤痕》。', explanation:'伤痕文学是新时期第一个文艺思潮。'},
+        {type:'名词解释', question:'反思文学', answer:'继伤痕文学之后出现的文学现象，超越暴露、控诉，引入理性分析成分，具有历史纵深感和思想容量。', explanation:'反思文学追问历史根源，从政治、文化、人性等层面反思极“左”路线。'},
+        {type:'选择题', question:'以下哪位诗人不属于“归来者”诗人群？', options:['艾青','公刘','邵燕祥','舒婷'], answer:'舒婷', explanation:'舒婷是朦胧诗代表诗人。'},
+        {type:'名词解释', question:'归来者', answer:'指“文革”后重返诗坛的复出诗人群体，包括艾青、公刘、白桦、邵燕祥、流沙河等。', explanation:'“归来者”诗歌控诉和反思历史，恢复了现实主义传统。'},
+        {type:'简答题', question:'简述“归来者”诗歌的创作特征。', answer:'①充满对苦难的诉说、对历史的深刻反思、对未来的热切期望；②艺术上多延续写实风格；③连接十七年诗歌与新时期诗歌。', explanation:'“归来者”作家以革命激情与“五四”传统相结合。'},
+        {type:'简答题', question:'简述“归来者”诗人的文学史意义。', answer:'他们是连接十七年诗歌与新时期诗歌的桥梁，为朦胧诗的兴起铺垫了道路。', explanation:'“归来者”诗歌冲破艺术禁锢。'},
+        {type:'选择题', question:'朦胧诗的核心阵地是？', options:['《今天》','《诗刊》','《星星》','《十月》'], answer:'《今天》', explanation:'《今天》是1978年由北岛、芒克等创办的民间诗歌杂志。'},
+        {type:'选择题', question:'以下哪部作品是北岛的代表诗作？', options:['《回答》','《致橡树》','《一代人》','《面朝大海，春暖花开》'], answer:'《回答》', explanation:'《回答》中“卑鄙是卑鄙者的通行证，高尚是高尚者的墓志铭”成为经典。'},
+        {type:'选择题', question:'“第三代诗”不主张以下哪种风格？', options:['口语化','日常化','崇高化','解构'], answer:'崇高化', explanation:'第三代诗反叛朦胧诗的崇高与精英化。'},
+        {type:'选择题', question:'白洋淀诗群属于哪种诗歌现象？', options:['地下诗歌','朦胧诗','归来者诗','第三代诗'], answer:'地下诗歌', explanation:'白洋淀诗群是“文革”期间知青诗人形成的地下写作群体。'},
+        {type:'选择题', question:'顾城被称为“童话诗人”，以下哪部是他的代表作？', options:['《回答》','《一代人》','《致橡树》','《面朝大海，春暖花开》'], answer:'《一代人》', explanation:'《一代人》中“黑夜给了我黑色的眼睛/我却用它寻找光明”成为朦胧诗经典。'},
+        {type:'选择题', question:'舒婷的《致橡树》体现了什么主题？', options:['独立平等的爱情观','政治批判','文化寻根','先锋实验'], answer:'独立平等的爱情观', explanation:'《致橡树》表达了独立平等、相互尊重的爱情观。'},
+        {type:'选择题', question:'“第三代诗”的主要群体不包括以下哪个？', options:['他们','非非','莽汉','今天'], answer:'今天', explanation:'“今天”是朦胧诗的核心阵地。'},
+        {type:'填空题', question:'朦胧诗的代表诗人有北岛、舒婷、顾城、芒克、多多和______。', answer:'杨炼', explanation:'杨炼是朦胧诗六大代表诗人之一。'},
+        {type:'填空题', question:'第三代诗的主要群体有“他们”、“非非”和“______”。', answer:'莽汉', explanation:'“莽汉”以李亚伟为代表，风格粗野反叛。'},
+        {type:'名词解释', question:'朦胧诗', answer:'70年代末至80年代初兴起的诗歌潮流，以《今天》杂志为核心阵地，代表诗人有北岛、舒婷、顾城等。', explanation:'朦胧诗开启了诗歌从“工具”向“本体”的转变。'},
+        {type:'名词解释', question:'第三代诗', answer:'又称“新生代”，反叛朦胧诗的崇高与精英化，追求口语化、日常化、世俗化。', explanation:'第三代诗将诗歌从精英殿堂拉回日常人间。'},
+        {type:'论述题', question:'论述朦胧诗的发生背景、艺术特征及文学史意义。', answer:'发生背景：“文革”后期“地下诗歌”运动的延续，《今天》杂志创刊。艺术特征：主体意识觉醒，意象化语言，呼唤人道主义和个性解放。文学史意义：当代新诗革新的起点。', explanation:'朦胧诗在形式与美学上具有反传统特征。'},
+        {type:'论述题', question:'论述“第三代诗”对朦胧诗的反叛及其文学史意义。', answer:'反叛：反叛崇高与精英化，追求口语化、日常化、世俗化。文学史意义：推动诗歌多元化和平民化。', explanation:'第三代诗以反叛“朦胧诗”为目的形成。'},
+        {type:'选择题', question:'张贤亮的《绿化树》属于哪种文学类型？', options:['大墙文学','改革文学','寻根文学','新写实'], answer:'大墙文学', explanation:'张贤亮是“大墙文学”的代表作家。'},
+        {type:'选择题', question:'张承志的《黑骏马》主要体现了什么主题？', options:['文化寻根','改革','伤痕','先锋'], answer:'文化寻根', explanation:'张承志作品具有强烈的文化寻根意识。'},
+        {type:'选择题', question:'以下哪部作品不属于“文革”手抄本小说？', options:['《波动》','《晚霞消失的时候》','《公开的情书》','《棋王》'], answer:'《棋王》', explanation:'《棋王》是阿城1984年发表的寻根文学代表作。'},
+        {type:'选择题', question:'《晚霞消失的时候》的作者是？', options:['礼平','北岛','靳凡','卢新华'], answer:'礼平', explanation:'礼平的《晚霞消失的时候》是“文革”手抄本小说之一。'},
+        {type:'填空题', question:'张贤亮的“唯物主义启示录”系列包括《灵与肉》《绿化树》和《______》。', answer:'男人的一半是女人', explanation:'三部中篇小说书写知识分子章永璘在苦难中的精神挣扎。'},
+        {type:'名词解释', question:'大墙文学', answer:'以“文革”中监狱、劳改农场等特殊空间为背景，书写知识分子苦难与精神挣扎的文学类型。', explanation:'张贤亮是代表人物。'},
+        {type:'名词解释', question:'张承志', answer:'80年代重要作家，代表作《黑骏马》《北方的河》，具有强烈的文化寻根意识。', explanation:'张承志把目光投向了民族文化。'},
+        {type:'选择题', question:'寻根文学的理论宣言是哪篇文章？', options:['《文学的根》','《文化寻根》','《传统与创新》','《回归民族》'], answer:'《文学的根》', explanation:'韩少功在《作家》杂志发表《文学的“根”》一文。'},
+        {type:'选择题', question:'莫言虚构的文学王国是？', options:['商州','高密东北乡','小鲍庄','边城'], answer:'高密东北乡', explanation:'莫言以故乡山东高密为原型构建了“高密东北乡”。'},
+        {type:'选择题', question:'残雪的代表作是？', options:['《山上的小屋》','《红高粱》','《棋王》','《爸爸爸》'], answer:'《山上的小屋》', explanation:'残雪受卡夫卡影响，代表作《山上的小屋》。'},
+        {type:'选择题', question:'《棋王》中主人公王一生痴迷于什么？', options:['棋','书','画','剑'], answer:'棋', explanation:'王一生以棋道寻找精神安顿。'},
+        {type:'选择题', question:'《爸爸爸》中象征民族文化困境的人物是？', options:['丙崽','王一生','乔光朴','章永璘'], answer:'丙崽', explanation:'丙崽是韩少功塑造的白痴形象，隐喻民族文化的愚昧与顽固。'},
+        {type:'名词解释', question:'寻根文学', answer:'80年代中期兴起的文学思潮，主张在民族文化传统中寻找文学资源，代表作有《爸爸爸》《棋王》等。', explanation:'寻根文学受拉美魔幻现实主义影响深远。'},
+        {type:'简答题', question:'简述寻根文学产生的社会背景和文学背景。', answer:'社会背景：改革开放后面对西方文化冲击。文学背景：超越“伤痕”“反思”文学，受拉美魔幻现实主义影响。', explanation:'寻根文学是1980年代中期兴起的文化反思运动。'},
+        {type:'选择题', question:'王蒙的《春之声》主要运用了什么现代派技巧？', options:['意识流','黑色幽默','元叙事','魔幻现实'], answer:'意识流', explanation:'《春之声》是中国意识流小说的开山之作。'},
+        {type:'选择题', question:'先锋小说的开山之作是？', options:['《十八岁出门远行》','《冈底斯的诱惑》','《虚构》','《现实一种》'], answer:'《冈底斯的诱惑》', explanation:'马原《冈底斯的诱惑》是先锋小说的开山之作。'},
+        {type:'选择题', question:'新写实小说主张以什么态度展示生活？', options:['零度情感','激情干预','批判现实','理想主义'], answer:'零度情感', explanation:'新写实以“零度情感”客观展示生活原生态。'},
+        {type:'选择题', question:'余华早期先锋小说的典型风格是？', options:['冷静叙述暴力','温暖抒情','幽默讽刺','宏大叙事'], answer:'冷静叙述暴力', explanation:'余华早期以冷静、客观的笔调叙述暴力和死亡。'},
+        {type:'选择题', question:'《你别无选择》属于什么流派？', options:['现代派','寻根文学','新写实','先锋小说'], answer:'现代派', explanation:'刘索拉《你别无选择》是现代派文学代表作。'},
+        {type:'选择题', question:'新写实小说《一地鸡毛》的作者是？', options:['刘震云','池莉','方方','刘恒'], answer:'刘震云', explanation:'刘震云是新写实小说代表作家。'},
+        {type:'选择题', question:'《无主题变奏》的作者是？', options:['徐星','刘索拉','王蒙','马原'], answer:'徐星', explanation:'徐星《无主题变奏》是现代派文学重要作品。'},
+        {type:'填空题', question:'先锋小说家马原以“______”著称，在小说中公开谈论虚构性。', answer:'元叙事', explanation:'马原以“元叙事”著称。'},
+        {type:'名词解释', question:'现代派文学', answer:'80年代初中期受西方现代主义影响的小说潮流，强调表现内心真实。', explanation:'“现代派”小说开启了当代“新潮文学”的闸门。'},
+        {type:'名词解释', question:'先锋小说', answer:'80年代中期兴起的以叙事革命为轴心的形式实验潮流，以马原、余华、格非为代表。', explanation:'先锋小说颠覆传统小说的真实性与因果逻辑。'},
+        {type:'名词解释', question:'新写实', answer:'80年代末出现的文学倾向，以“零度情感”客观展示生活原生态，代表作家有池莉、刘震云、方方。', explanation:'新写实小说成为80年代后半期最有影响的创作思潮。'},
+        {type:'选择题', question:'晚生代作家群体又称？', options:['新生代','第三代','归来者','先锋派'], answer:'新生代', explanation:'晚生代又称“新生代”或“60年代出生作家群”。'},
+        {type:'选择题', question:'晚生代的命名提出者是？', options:['陈晓明','洪子诚','王德威','陈思和'], answer:'陈晓明', explanation:'评论家陈晓明于1995年首次提出“晚生代”概念。'},
+        {type:'选择题', question:'以下哪位是晚生代的核心作家？', options:['韩东','余华','莫言','张承志'], answer:'韩东', explanation:'韩东是晚生代核心作家，代表作《扎根》。'},
+        {type:'名词解释', question:'晚生代', answer:'90年代中期被命名的作家群体，又称“新生代”，由陈晓明命名，核心作家有韩东、朱文、毕飞宇等。', explanation:'晚生代告别宏大叙事，聚焦都市个体经验。'},
+        {type:'简答题', question:'简述晚生代小说的主要特征。', answer:'①个人化叙事；②都市题材；③反叛先锋形式主义，语言平实；④价值中立。', explanation:'晚生代依靠个人经验写作。'},
+        {type:'选择题', question:'张洁的《爱，是不能忘记的》属于第几代女作家创作？', options:['第一代','第二代','第三代','第四代'], answer:'第二代', explanation:'张洁是80年代崛起的第二代女作家代表。'},
+        {type:'选择题', question:'以下哪位作家不属于第三代女作家？', options:['陈染','林白','海男','王安忆'], answer:'王安忆', explanation:'王安忆是第二代女作家核心代表。'},
+        {type:'选择题', question:'“身体写作”属于哪一代女作家的创作特征？', options:['第一代','第二代','第三代','全部'], answer:'第三代', explanation:'“身体写作”是第三代女作家的重要概念。'},
+        {type:'选择题', question:'王安忆的“三恋”系列不包括以下哪部？', options:['《荒山之恋》','《小城之恋》','《锦绣谷之恋》','《长恨歌》'], answer:'《长恨歌》', explanation:'“三恋”系列包括《荒山之恋》《小城之恋》《锦绣谷之恋》。'},
+        {type:'选择题', question:'以下哪部作品是林白的代表作？', options:['《一个人的战争》','《私人生活》','《方舟》','《沉重的翅膀》'], answer:'《一个人的战争》', explanation:'林白《一个人的战争》是身体写作的代表作。'},
+        {type:'选择题', question:'陈染的代表作《私人生活》属于什么写作类型？', options:['身体写作/个人化','改革文学','寻根文学','新写实'], answer:'身体写作/个人化', explanation:'《私人生活》是90年代个人化写作和女性主义文学的旗帜。'},
+        {type:'填空题', question:'王安忆的“三恋”系列深入探索女性______。', answer:'欲望', explanation:'“三恋”系列深入探索女性欲望。'},
+        {type:'名词解释', question:'第二代女作家', answer:'80年代崛起的女作家群，如张洁、王安忆、铁凝，开始关注女性的情感、欲望与生存困境。', explanation:'第二代女作家在80年代崛起。'},
+        {type:'名词解释', question:'第三代女作家', answer:'90年代崛起的更年轻女作家，如陈染、林白，转向私密化、个人化写作，以身体写作表达女性最内在的经验。', explanation:'第三代女作家是90年代“个人化写作”的旗帜。'},
+        {type:'选择题', question:'高晓声“陈奂生系列”属于哪类文学？', options:['改革文学','伤痕文学','反思文学','寻根文学'], answer:'改革文学', explanation:'高晓声是改革文学代表作家。'},
+        {type:'选择题', question:'“零度情感”是哪一流派的核心主张？', options:['新写实','先锋小说','现代派','寻根文学'], answer:'新写实', explanation:'新写实主张以“零度情感”客观展示生活原生态。'},
+        {type:'选择题', question:'《沉重的翅膀》的作者是？', options:['张洁','王安忆','铁凝','谌容'], answer:'张洁', explanation:'张洁《沉重的翅膀》是改革文学代表作。'},
+        {type:'选择题', question:'白洋淀诗群的代表诗人有？', options:['芒克、多多','北岛、舒婷','于坚、韩东','艾青、公刘'], answer:'芒克、多多', explanation:'白洋淀诗群代表诗人有芒克、多多等。'},
+        {type:'选择题', question:'寻根文学受哪位外国作家影响最深？', options:['马尔克斯','卡夫卡','福克纳','萨特'], answer:'马尔克斯', explanation:'寻根文学深受马尔克斯魔幻现实主义影响。'},
+        {type:'选择题', question:'莫言作品的核心特征是？', options:['魔幻与现实融合、生命强力','冷静叙述暴力','梦魇般的叙事','文化寓言'], answer:'魔幻与现实融合、生命强力', explanation:'莫言作品融合魔幻与现实，书写民间传奇与生命强力。'},
+        {type:'选择题', question:'残雪作品的核心特征是？', options:['梦魇般的叙事、人性异化','民间传奇、生命强力','文化寻根、理想主义','意识流、内心真实'], answer:'梦魇般的叙事、人性异化', explanation:'残雪以梦魇般的叙事探索人性的幽暗与异化。'},
+        {type:'选择题', question:'新写实小说《烦恼人生》的主人公是？', options:['印家厚','小林','七哥','高加林'], answer:'印家厚', explanation:'池莉《烦恼人生》主人公印家厚是普通工人。'},
+        {type:'选择题', question:'张承志的作品中常出现什么文化元素？', options:['草原/回族','商州','高密','小鲍庄'], answer:'草原/回族', explanation:'张承志作品常书写草原文化和回族文化。'},
+        {type:'填空题', question:'寻根文学的代表作《爸爸爸》的作者是______。', answer:'韩少功', explanation:'韩少功是寻根文学的理论倡导者。'},
+        {type:'填空题', question:'寻根文学代表作《小鲍庄》的作者是______。', answer:'王安忆', explanation:'王安忆《小鲍庄》是文化寻根与写实结合的典范。'},
+        {type:'填空题', question:'现代派文学中刘索拉的代表作是《______》。', answer:'你别无选择', explanation:'刘索拉《你别无选择》是现代派文学代表作。'},
+        {type:'填空题', question:'晚生代的命名提出者是评论家______。', answer:'陈晓明', explanation:'陈晓明于1995年提出“晚生代”概念。'},
+        {type:'填空题', question:'第三代女作家陈染的代表作是《______》。', answer:'私人生活', explanation:'陈染《私人生活》是个人化写作的代表作。'},
+        {type:'选择题', question:'改革文学中《沉重的翅膀》的作者是？', options:['张洁','王安忆','铁凝','谌容'], answer:'张洁', explanation:'张洁是改革文学代表作家。'},
+        {type:'选择题', question:'寻根文学《小鲍庄》的作者是？', options:['韩少功','阿城','王安忆','贾平凹'], answer:'王安忆', explanation:'王安忆《小鲍庄》探讨儒家“仁义”观念。'},
+        {type:'选择题', question:'新写实《风景》的作者是？', options:['池莉','方方','刘震云','刘恒'], answer:'方方', explanation:'方方《风景》以亡灵视角叙述底层生存。'},
+        {type:'填空题', question:'“归来者”诗人艾青的代表作是《______》。', answer:'大堰河——我的保姆', explanation:'艾青是“归来者”诗人代表。'},
+        {type:'填空题', question:'第三代诗人海子的代表作有《______》。', answer:'面朝大海，春暖花开', explanation:'海子是第三代诗代表诗人。'},
+        {type:'填空题', question:'朦胧诗诗人顾城的代表作是《______》。', answer:'一代人', explanation:'顾城被称为“童话诗人”。'},
+        {type:'填空题', question:'改革文学代表作家张洁的《______》获茅盾文学奖。', answer:'沉重的翅膀', explanation:'《沉重的翅膀》获第二届茅盾文学奖。'},
+        {type:'填空题', question:'新写实小说《一地鸡毛》的作者是______。', answer:'刘震云', explanation:'刘震云是新写实小说代表作家。'},
+        {type:'简答题', question:'简述改革文学的创作特征。', answer:'热情呼唤改革，塑造改革家形象（如乔光朴），反映改革中的矛盾与阻力。', explanation:'改革文学直面现实，充满理想主义激情。'},
+        {type:'简答题', question:'简述寻根文学的代表作品。', answer:'代表作品有韩少功《爸爸爸》、阿城《棋王》、王安忆《小鲍庄》等。', explanation:'寻根文学从民族传统文化中寻找资源。'},
+        {type:'简答题', question:'简述先锋小说的代表作家及其特点。', answer:'马原以“元叙事”著称，余华冷静叙述暴力，格非设置迷宫式叙事，孙甘露实验性语言。', explanation:'先锋小说以叙事革命为轴心。'},
+        {type:'简答题', question:'简述新写实小说的代表作品。', answer:'代表作品有池莉《烦恼人生》、刘震云《一地鸡毛》、方方《风景》等。', explanation:'新写实小说以“零度情感”展示生活原生态。'},
+        {type:'简答题', question:'简述晚生代的核心作家及其创作特点。', answer:'核心作家有韩东、朱文、毕飞宇等，特点：个人化叙事、价值中立、语言平实。', explanation:'晚生代依靠个人经验写作。'},
+        {type:'简答题', question:'简述“归来者”诗歌的创作特征。', answer:'①充满对苦难的诉说与历史反思；②延续写实风格；③连接十七年诗歌与新时期诗歌。', explanation:'“归来者”诗歌冲破艺术禁锢。'}
+    ];
+
+    // ========== 全局变量 ==========
+    var questions = [];
+    var total = 0;
+    var currentIndex = 0;
+    var answered = false;
+    var favorites = [];           // 收藏题目
+    var currentOverrideQ = null; // 自定义题目覆盖
+    var customExplanations = {}; // 用户自定义解析 { "题目文本": "新解析" }
+
+    // DOM 元素
+    var quizView = document.getElementById('quizView');
+    var favView = document.getElementById('favView');
+    var typeBadge = document.getElementById('typeBadge');
+    var progressText = document.getElementById('progressText');
+    var questionText = document.getElementById('questionText');
+    var answerArea = document.getElementById('answerArea');
+    var submitBtn = document.getElementById('submitBtn');
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var favBtn = document.getElementById('favBtn');
+    var viewFavBtn = document.getElementById('viewFavBtn');
+    var favCountSpan = document.getElementById('favCount');
+    var answerDisplay = document.getElementById('answerDisplay');
+    var explanationBox = document.getElementById('explanationBox');
+    var backToFavFromQuiz = document.getElementById('backToFavFromQuiz');
+    var backToQuizBtn = document.getElementById('backToQuizBtn');
+    var favList = document.getElementById('favList');
+
+    // ========== 初始化 ==========
+    function init() {
+        loadFavorites();
+        loadCustomExplanations();
+        questions = shuffleArray(rawQuestions.slice());
+        total = questions.length;
+        currentIndex = 0;
+        currentOverrideQ = null;
+        renderQuestion();
+        updateFavButtonState();
+        updateFavCount();
+    }
+
+    function shuffleArray(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+        return arr;
+    }
+
+    // ========== 自定义解析管理 ==========
+    function loadCustomExplanations() {
+        var stored = localStorage.getItem('lit_custom_explanations');
+        if (stored) {
+            try { customExplanations = JSON.parse(stored); } catch(e) { customExplanations = {}; }
+        }
+    }
+
+    function saveCustomExplanations() {
+        localStorage.setItem('lit_custom_explanations', JSON.stringify(customExplanations));
+    }
+
+    function getFinalExplanation(q) {
+        return customExplanations[q.question] || q.explanation || '暂无解析';
+    }
+
+    // 渲染解析框，包含编辑按钮
+    function renderExplanationBox(q) {
+        var finalExp = getFinalExplanation(q);
+        explanationBox.innerHTML = '📖 解析：\n<span class="exp-text">' + finalExp + '</span> <button class="btn btn-outline edit-exp-btn" style="padding:2px 10px; font-size:12px; margin-left:8px;">✏️ 编辑解析</button>';
+        var editBtn = explanationBox.querySelector('.edit-exp-btn');
+        if (editBtn) {
+            editBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                startEditExplanation(q);
+            });
+        }
+    }
+
+    function startEditExplanation(q) {
+        var currentExp = customExplanations[q.question] || q.explanation || '';
+        explanationBox.innerHTML = '📖 编辑解析：<br><textarea id="editExpTextarea" style="width:100%; min-height:60px;">' + currentExp + '</textarea><div style="margin-top:6px;"><button class="btn btn-primary save-exp-btn">保存</button> <button class="btn btn-secondary cancel-exp-btn">取消</button></div>';
+        var saveBtn = explanationBox.querySelector('.save-exp-btn');
+        var cancelBtn = explanationBox.querySelector('.cancel-exp-btn');
+        saveBtn.addEventListener('click', function() {
+            var newText = document.getElementById('editExpTextarea').value;
+            customExplanations[q.question] = newText;
+            saveCustomExplanations();
+            renderExplanationBox(q);
+            explanationBox.classList.add('show');
+        });
+        cancelBtn.addEventListener('click', function() {
+            renderExplanationBox(q);
+            explanationBox.classList.add('show');
+        });
+    }
+
+    // ========== 收藏功能 ==========
+    function loadFavorites() {
+        var stored = localStorage.getItem('lit_favorites');
+        favorites = stored ? (JSON.parse(stored) || []) : [];
+    }
+
+    function saveFavorites() {
+        localStorage.setItem('lit_favorites', JSON.stringify(favorites));
+    }
+
+    function isFavorite(q) {
+        return q && favorites.some(function(fav) { return fav.question === q.question; });
+    }
+
+    function updateFavButtonState() {
+        var q = getCurrentQuestion();
+        if (!q) return;
+        if (isFavorite(q)) {
+            favBtn.textContent = '❤️ 已收藏';
+            favBtn.classList.add('active');
+        } else {
+            favBtn.textContent = '🤍 收藏';
+            favBtn.classList.remove('active');
+        }
+    }
+
+    function updateFavCount() {
+        favCountSpan.textContent = favorites.length;
+    }
+
+    function toggleFavorite() {
+        var q = getCurrentQuestion();
+        if (!q) return;
+        if (isFavorite(q)) {
+            favorites = favorites.filter(function(fav) { return fav.question !== q.question; });
+        } else {
+            favorites.push(JSON.parse(JSON.stringify(q)));
+        }
+        saveFavorites();
+        updateFavButtonState();
+        updateFavCount();
+        if (favView.classList.contains('show')) renderFavList();
+    }
+
+    function getCurrentQuestion() {
+        return currentOverrideQ || questions[currentIndex];
+    }
+
+    // ========== 视图切换 ==========
+    function showQuizView() {
+        quizView.style.display = 'block';
+        favView.style.display = 'none';
+        favView.classList.remove('show');
+    }
+
+    function showFavView() {
+        quizView.style.display = 'none';
+        favView.style.display = 'block';
+        favView.classList.add('show');
+        renderFavList();
+    }
+
+    function startFavQuestion(favQ) {
+        currentOverrideQ = JSON.parse(JSON.stringify(favQ));
+        answered = false;
+        showQuizView();
+        renderQuestionWithOverride();
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        backToFavFromQuiz.style.display = 'inline-block';
+        updateFavButtonState();
+    }
+
+    function showFavExplanation(favQ) {
+        currentOverrideQ = JSON.parse(JSON.stringify(favQ));
+        showQuizView();
+        renderQuestionWithOverride();
+        answerDisplay.textContent = '✅ 正确答案：\n' + (favQ.answer || '无答案');
+        answerDisplay.classList.add('show');
+        renderExplanationBox(favQ);
+        explanationBox.classList.add('show');
+        answered = true;
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        backToFavFromQuiz.style.display = 'inline-block';
+        updateFavButtonState();
+    }
+
+    function backToFavList() {
+        currentOverrideQ = null;
+        showFavView();
+        prevBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'inline-block';
+        backToFavFromQuiz.style.display = 'none';
+    }
+
+    function backToRandomQuiz() {
+        currentOverrideQ = null;
+        showQuizView();
+        answered = false;
+        renderQuestion();
+        prevBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'inline-block';
+        backToFavFromQuiz.style.display = 'none';
+        updateFavButtonState();
+    }
+
+    // ========== 题目渲染 ==========
+    function renderQuestion() {
+        var q = questions[currentIndex];
+        if (!q) { questionText.textContent = '题目加载失败，请刷新。'; return; }
+        renderQuestionByObject(q);
+        progressText.textContent = (currentIndex + 1) + ' / ' + total;
+        prevBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'inline-block';
+        backToFavFromQuiz.style.display = 'none';
+        answered = false;
+        updateFavButtonState();
+    }
+
+    function renderQuestionWithOverride() {
+        var q = currentOverrideQ;
+        if (!q) return;
+        renderQuestionByObject(q);
+        progressText.textContent = '收藏题目';
+        answered = false;
+        updateFavButtonState();
+    }
+
+    function renderQuestionByObject(q) {
+        typeBadge.textContent = q.type || '未知题型';
+        questionText.textContent = q.question || '题目缺失';
+        answerArea.innerHTML = '';
+        answerDisplay.classList.remove('show');
+        answerDisplay.textContent = '';
+        explanationBox.classList.remove('show');
+        explanationBox.innerHTML = '';
+        answered = false;
+
+        if (q.type === '选择题') {
+            var div = document.createElement('div');
+            div.className = 'options-group';
+            (q.options || []).forEach(function(opt) {
+                var label = document.createElement('label');
+                var radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'choice';
+                radio.value = opt;
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(' ' + opt));
+                div.appendChild(label);
+            });
+            answerArea.appendChild(div);
+        } else if (q.type === '填空题') {
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = '请输入答案...';
+            input.id = 'fillInput';
+            answerArea.appendChild(input);
+        } else {
+            var textarea = document.createElement('textarea');
+            textarea.placeholder = '请输入你的回答...';
+            textarea.id = 'textAnswer';
+            answerArea.appendChild(textarea);
+        }
+    }
+
+    function getUserAnswer() {
+        var q = getCurrentQuestion();
+        if (!q) return '';
+        if (q.type === '选择题') {
+            var sel = document.querySelector('input[name="choice"]:checked');
+            return sel ? sel.value : '';
+        } else if (q.type === '填空题') {
+            var inp = document.getElementById('fillInput');
+            return inp ? inp.value : '';
+        } else {
+            var ta = document.getElementById('textAnswer');
+            return ta ? ta.value : '';
+        }
+    }
+
+    function handleSubmit() {
+        if (answered) return;
+        var q = getCurrentQuestion();
+        if (!q) return;
+        var userAns = getUserAnswer();
+        var displayText = '✅ 正确答案：\n' + (q.answer || '无答案');
+        if (userAns && userAns.trim()) {
+            displayText += '\n\n📝 你的回答：\n' + userAns;
+        } else {
+            displayText += '\n\n❌ 你还没有输入答案。';
+        }
+        answerDisplay.textContent = displayText;
+        answerDisplay.classList.add('show');
+        renderExplanationBox(q);
+        explanationBox.classList.add('show');
+        answered = true;
+    }
+
+    function goPrev() {
+        if (currentOverrideQ) return;
+        if (currentIndex > 0) { currentIndex--; renderQuestion(); }
+    }
+
+    function goNext() {
+        if (currentOverrideQ) return;
+        if (currentIndex < total - 1) { currentIndex++; renderQuestion(); }
+    }
+
+    function renderFavList() {
+        favList.innerHTML = '';
+        if (favorites.length === 0) {
+            favList.innerHTML = '<li style="text-align:center; color:#94a3b8; padding:20px;">暂无收藏，去练习页收藏题目吧~</li>';
+            return;
+        }
+        favorites.forEach(function(fav) {
+            var li = document.createElement('li');
+            li.className = 'fav-item';
+            li.innerHTML = '<div class="item-info"><span class="item-type">' + fav.type + '</span><div class="item-question">' + fav.question + '</div></div>' +
+                           '<div class="item-actions">' +
+                           '<button class="btn btn-outline redo-btn" style="padding:6px 12px; font-size:13px;">重做</button>' +
+                           '<button class="btn btn-secondary view-exp-btn" style="padding:6px 12px; font-size:13px;">查看解析</button>' +
+                           '</div>';
+            li.querySelector('.redo-btn').addEventListener('click', function() { startFavQuestion(fav); });
+            li.querySelector('.view-exp-btn').addEventListener('click', function() { showFavExplanation(fav); });
+            favList.appendChild(li);
+        });
+    }
+
+    // ========== 事件绑定 ==========
+    submitBtn.addEventListener('click', handleSubmit);
+    prevBtn.addEventListener('click', goPrev);
+    nextBtn.addEventListener('click', goNext);
+    favBtn.addEventListener('click', toggleFavorite);
+    viewFavBtn.addEventListener('click', showFavView);
+    backToQuizBtn.addEventListener('click', backToRandomQuiz);
+    backToFavFromQuiz.addEventListener('click', backToFavList);
+
+    // 启动
+    init();
+</script>
+</body>
+</html>
