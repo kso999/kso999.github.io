@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>毛概刷题 · 全题库</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .app {
+            max-width: 840px;
+            width: 100%;
+            max-height: 98vh;
+            overflow-y: auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            padding: 24px 28px 20px;
+            scroll-behavior: smooth;
+        }
+        .app::-webkit-scrollbar {
+            width: 4px;
+        }
+        .app::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 8px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid #eef2f6;
+            padding-bottom: 14px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .header-left h1 {
+            font-size: 20px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #b31b1b, #8b0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: #374151;
+            font-weight: 500;
+            font-size: 16px;
+            padding: 4px 8px;
+            border-radius: 40px;
+            transition: background 0.15s;
+        }
+        .back-link:hover {
+            background: #f3f4f6;
+        }
+        .badge {
+            background: #eef2f6;
+            color: #374151;
+            font-size: 13px;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .progress-text {
+            font-weight: 500;
+            background: #f3f4f6;
+            padding: 4px 14px;
+            border-radius: 40px;
+        }
+        .star-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.15s;
+            line-height: 1;
+            padding: 0 4px;
+            color: #d1d5db;
+        }
+        .star-btn.active {
+            color: #f59e0b;
+        }
+        .star-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .progress-bar-wrap {
+            width: 100%;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #b31b1b, #dc2626);
+            border-radius: 8px;
+            transition: width 0.25s ease;
+        }
+
+        .question-area {
+            min-height: 280px;
+            padding: 4px 0 8px;
+        }
+        .q-type {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffffff;
+            background: #6b7280;
+            padding: 2px 14px;
+            border-radius: 40px;
+            letter-spacing: 0.3px;
+            margin-bottom: 12px;
+        }
+        .q-type.single { background: #2563eb; }
+        .q-type.multiple { background: #7c3aed; }
+        .q-type.essay { background: #059669; }
+        .q-type.short { background: #d97706; }
+        .q-type.material { background: #dc2626; }
+        .q-type.judge { background: #0891b2; }
+
+        .q-title {
+            font-size: 17px;
+            font-weight: 500;
+            line-height: 1.7;
+            margin-bottom: 16px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 10px 0 16px;
+        }
+        .option-item {
+            padding: 12px 18px;
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: 0.15s;
+            font-size: 15px;
+            line-height: 1.5;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .option-item:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+        .option-item .opt-label {
+            font-weight: 600;
+            color: #4b5563;
+            min-width: 22px;
+        }
+        .option-item.correct {
+            background: #dcfce7;
+            border-color: #22c55e;
+        }
+        .option-item.correct .opt-label {
+            color: #16a34a;
+        }
+        .option-item.wrong {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+        .option-item.wrong .opt-label {
+            color: #dc2626;
+        }
+        .option-item.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+        .option-item.disabled:hover {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+        }
+        .option-item.disabled.correct:hover {
+            background: #dcfce7;
+            border-color: #22c55e;
+        }
+        .option-item.disabled.wrong:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+
+        .answer-box {
+            margin: 14px 0 10px;
+            padding: 14px 18px;
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.7;
+            display: none;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .answer-box.show {
+            display: block;
+        }
+        .answer-box .ans-label {
+            font-weight: 600;
+            color: #15803d;
+            margin-right: 6px;
+        }
+        .answer-box .ans-content {
+            color: #1e293b;
+        }
+        .material-box {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin: 8px 0 16px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #334155;
+            max-height: 220px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .material-box .mat-label {
+            font-weight: 600;
+            color: #0f172a;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            letter-spacing: 0.3px;
+        }
+        .show-ans-btn {
+            margin: 8px 0 4px;
+            padding: 10px 26px;
+            background: #1f2937;
+            color: #fff;
+            border: none;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-block;
+        }
+        .show-ans-btn:hover {
+            background: #111827;
+            transform: scale(0.97);
+        }
+        .show-ans-btn:active {
+            transform: scale(0.94);
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #eef2f6;
+        }
+        .nav-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            padding: 8px 22px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            cursor: pointer;
+            transition: 0.12s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: #e5e7eb;
+        }
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .nav-btn.primary {
+            background: #b31b1b;
+            color: #fff;
+        }
+        .nav-btn.primary:hover:not(:disabled) {
+            background: #8b0000;
+        }
+        .jump-input {
+            width: 54px;
+            padding: 6px 4px;
+            text-align: center;
+            border: 1.5px solid #d1d5db;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            outline: none;
+            transition: 0.12s;
+        }
+        .jump-input:focus {
+            border-color: #b31b1b;
+            box-shadow: 0 0 0 3px rgba(179, 27, 27, 0.15);
+        }
+        .jump-btn {
+            padding: 6px 16px;
+            background: #e5e7eb;
+            border: none;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.12s;
+        }
+        .jump-btn:hover {
+            background: #d1d5db;
+        }
+        .total-badge {
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        @media (max-width: 600px) {
+            .app {
+                padding: 16px 14px;
+                border-radius: 20px;
+                max-height: 96vh;
+            }
+            .header-left h1 { font-size: 17px; }
+            .q-title { font-size: 15px; }
+            .option-item { padding: 10px 14px; font-size: 14px; }
+            .footer-nav { flex-direction: column; align-items: stretch; }
+            .nav-group { justify-content: center; }
+            .nav-btn { padding: 6px 16px; font-size: 13px; }
+            .jump-input { width: 46px; }
+        }
+        .material-box::-webkit-scrollbar { width: 4px; }
+        .material-box::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+        .material-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+        .star-btn.active { animation: starPop 0.2s ease; }
+        @keyframes starPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.35); }
+            100% { transform: scale(1); }
+        }
+        .error-msg {
+            color: #b91c1c;
+            background: #fee2e2;
+            padding: 16px 20px;
+            border-radius: 16px;
+            border-left: 4px solid #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="app" id="app">
+        <div class="header">
+            <div class="header-left">
+                <a href="index.html" class="back-link">← 返回</a>
+                <h1>📘 毛概刷题</h1>
+                <span class="badge" id="typeBadge">全题库</span>
+            </div>
+            <div class="header-right">
+                <span class="progress-text" id="progressText">1 / 46</span>
+                <button class="star-btn" id="starBtn" title="收藏本题">☆</button>
+            </div>
+        </div>
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <div class="question-area" id="questionArea"></div>
+        <div class="footer-nav">
+            <div class="nav-group">
+                <button class="nav-btn" id="prevBtn">‹ 上一题</button>
+                <button class="nav-btn" id="nextBtn">下一题 ›</button>
+                <button class="nav-btn primary" id="randomBtn">🎲 随机</button>
+            </div>
+            <div class="nav-group">
+                <span class="total-badge" id="totalBadge">共 46 题</span>
+                <input type="number" class="jump-input" id="jumpInput" min="1" max="46" value="1">
+                <button class="jump-btn" id="jumpBtn">跳转</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            "use strict";
+
+            // ============================================================
+            // 1. 完整题库数据 (直接使用对象数组，避免函数作用域问题)
+            // ============================================================
+            const questions = [];
+
+            // 辅助：添加单选题
+            function addSingle(title, answer, optionsStr) {
+                const opts = optionsStr.split(' ').filter(s => s.trim().length > 0);
+                questions.push({
+                    id: questions.length + 1,
+                    type: 'single',
+                    title: title,
+                    answer: answer,
+                    options: opts,
+                    material: null,
+                    subQuestions: null,
+                    collected: false,
+                    _revealed: false,
+                    _selected: []
+                });
+            }
+
+            // 辅助：添加多选题
+            function addMultiple(title, answer, optionsStr) {
+                const opts = optionsStr.split(' ').filter(s => s.trim().length > 0);
+                questions.push({
+                    id: questions.length + 1,
+                    type: 'multiple',
+                    title: title,
+                    answer: answer,
+                    options: opts,
+                    material: null,
+                    subQuestions: null,
+                    collected: false,
+                    _revealed: false,
+                    _selected: []
+                });
+            }
+
+            // 辅助：添加其他类型（论述、简答、辨析、材料等）
+            function addGeneral(type, title, answer, material, subQuestions) {
+                questions.push({
+                    id: questions.length + 1,
+                    type: type,
+                    title: title,
+                    answer: answer || null,
+                    options: null,
+                    material: material || null,
+                    subQuestions: subQuestions || null,
+                    collected: false,
+                    _revealed: false,
+                    _selected: []
+                });
+            }
+
+            // ----- 单选题 1~15 -----
+            const singleData = [
+                ['全面贯彻"三个代表"重要思想的关键在（A）', 'A', 'A、坚持与时俱进 B、坚持党的先进性 C、坚持执政为民 D、坚持党的领导'],
+                ['邓小平理论的精髓是（B）', 'B', 'A、解放生产力,发展生产力 B、解放思想,实事求是 C、坚持四项基本原则 D、"三个有利于"标准'],
+                ['消灭剥削的物质前提是（B）', 'B', 'A、实行公有制 B、生产力的高度发达 C、实行人民民主专政 D、实行按劳分配'],
+                ['我国社会主义初级阶段的时间是指（B）', 'B', 'A、中华人民共和国成立到社会主义现代化基本实现 B、社会主义改造基本完成到社会主义现代化基本实现 C、中华人民共和国成立到社会主义改造基本完成 D、社会主义改造基本完成到共产主义社会'],
+                ['坚持党的基本路线一百年不动摇的关键是（A）', 'A', 'A、坚持以经济建设为中心不动摇 B、坚持"两手抓,两手都要硬"的方针不动摇 C、坚持四项基本原则不动摇 D、坚持改革开放不动摇'],
+                ['我国社会主义建设的战略目标是（D）', 'D', 'A、实现农业、工业、国防和科学技术现代化 B、实现工业化、社会化、市场化、和现代化 C、实现政治、经济和文化的现代化 D、把我国建设成为富强、民主、文明的社会主义现代化国家'],
+                ['我国的工业化任务还没有完成，总体上看，现在还处于（C）', 'C', 'A、农业社会 B、现代化工业社会 C、工业化中期阶段 D、工业化高级阶段'],
+                ['实现全面建设小康社会的目标重点和难点在（D）', 'D', 'A、大城市 B、中等城市 C、小城镇 D、农村'],
+                ['实行以家庭承包经营为基础、统分结合的双层经营体制，是党在农村的基本政策，必须长期坚持。稳定和完善这一双层经营体制的关键和核心是（A）', 'A',
+                    'A、稳定和完善土地承包关系 B、完善农村所有制结构 C、尊重农民的首创精神 D、发展规模经济'
+                ],
+                ['改革开放以来，对社会主义可以实行市场经济在理论认识上重大突破是（D）', 'D', 'A、市场经济是法治经济 B、市场对资源配置起基础性作用 C、市场经济是国家宏观调控的经济 D、市场经济不属于社会基本制度的范畴'],
+                ['社会主义市场经济条件下，市场机制（A）', 'A', 'A、对资源配置起基础性作用 B、能确保经济总量的平衡 C、可以实现经济结构的平衡 D、可以保障社会公平'],
+                ['私营经济中的劳动者的收入属于（C）', 'C', 'A、按劳分配收入 B、按资分配 C、按劳动力价值分配 D、按经营分配'],
+                ['人民民主是社会主义的本质要求和内在属性，归根到底是（A）', 'A', 'A、是社会主义公有制经济在政治上的集中体现 B、有利于调动最广大人民群众的积极性 C、是社会主义制度优越性的重要体现 D、体现了多数人对少数人的专政'],
+                ['在下列收入中属于按劳分配性质的收入是（B）', 'B', 'A、个体劳动者的劳动收入 B、集体企业职工的工资收入 C、股份制企业职工的按股分红收入 D、国有企业工程师业余帮助乡镇企业搞设计获得的收入'],
+                ['社会主义精神文明建设的基本内容是（B）', 'B', 'A、培育和弘扬民族精神及培育"四有"公民 B、加强思想道德建设，发展教育科学文化 C、加强马列主义、毛泽东思想、邓小平理论教育 D、坚持党的基本路线和基本方针']
+            ];
+            singleData.forEach(item => addSingle(item[0], item[1], item[2]));
+
+            // ----- 多选题 16~25 -----
+            const multiData = [
+                { title: '党的十五大指出邓小平理论是马克思主义在中国发展的新阶段，其基本依据是（ABDE）', answer: 'ABDE',
+                    options: 'A、开拓了马克思主义的新境界 B、提出了新的世界观和方法论 C、把对社会主义的认识提高到新的科学水平 D、对当今时代特征和总体国际局势做出新的科学判断 E、形成了新的建设中国特色社会主义理论的科学体系' },
+                { title: '"三个有利于"判断标准是（ABC）', answer: 'ABC', options: 'A、生产力标准的深化 B、实践标准与真理标准的统一 C、实践标准在社会领域的深化和具体化 D、解放思想，实事求是的统一 E、四项基本原则的具体统一' },
+                { title: '社会主义按劳分配的必然性是：（ABC）', answer: 'ABC',
+                    options: 'A、社会主义生产资料公有制是实行按劳分配的前提条件 B、社会主义生产力发展水平是实行按劳分配的物质条件 C、劳动还存在着种大差别，劳动还是谋生的手段，是实行按劳分配的直接原因 D、多种所有制经济存在是根本原因 E、社会主义市场经济的发展是直接原因' },
+                { title: '确立社会主义根本任务的依据是（ABCD）', answer: 'ABCD',
+                    options: 'A、生产力是社会发展的最根本的决定性因素 B、社会主义本质决定的 C、解决社会主义初级阶段主要矛盾的要求 D、体现社会主义制度优越性的基本条件 E、适应当今世界"和平与发展"时代的要求' },
+                { title: '邓小平指出"改革是中国的第二次革命"，其含义是指（BCDE）', answer: 'BCDE',
+                    options: 'A、改革与第一次革命具有相同的内容 B、改革也是解放生产力 C、改革是对原有经济体制的根本性变革 D、改革引起了社会生活的深刻变化 E、改革是社会主义发展的直接动力' },
+                { title: '我国经济社会发展战略的特点是（ABCD）', answer: 'ABCD',
+                    options: 'A、既具有雄心壮志，又坚持实事求是 B、注重社会全面协调发展 C、以提高人民生活水平为出发点和归宿点 D、体现了社会主义制度的优越性 E、是赶超发达国家的发展战略' },
+                { title: '社会主义市场经济体制（ABC）', answer: 'ABC',
+                    options: 'A、是我国经济体制改革的目标 B、是同社会主义基本制度结合在一起的 C、是市场在社会主义国家宏观调控下对资源配置起基础性作用的经济体制 D、是同资本主义市场经济完全相同的 E、是市场对社会经济完全起作用的' },
+                { title: '中国外交政策的主要目标是（AB）', answer: 'AB',
+                    options: 'A、反对霸权主义,维护世界和平 B、增强国际合作,促进共同发展 C、坚持独立自主 D、和平共处 E、加强同第三世界的团结与合作' },
+                { title: '社会变革中出现的社会阶层包括（ABCDE）', answer: 'ABCDE',
+                    options: 'A、民营科技企业的创业人员和技术人员 B、受聘于外资企业的管理人员和技术人员 C、个体户、私营企业主 D、中介组织的从业人员 E、自由职业人员' },
+                { title: '在新的历史时期，党面临的两大历史性课题是（AE）', answer: 'AE',
+                    options: 'A、提高党的领导水平和执政水平 B、建立市场经济体制 C、国企改革 D、防止西方和平演变 E、提高拒腐防变和抵御风险能力' }
+            ];
+            multiData.forEach(item => addMultiple(item.title, item.answer, item.options));
+
+            // ----- 辨析题 26~27 -----
+            addGeneral('judge', '辨析题1：随着改革开放的深入进行，我国所有制结构发生了重大变化，非公有制经济比重有所增加，公有制经济的比重有所减少。这势必会影响我国社会主义的性质。',
+                '（1）改革开放以来非公有制经济的迅速发展改变了我国所有制结构不合理的状况，解放和发展了生产力，是我国经济体制改革的重大经济成果之一；（2）公有制经济是社会主义经济制度的基础，在所有制结构中仍然占据主体地位，在社会主义市场经济发展的过程中也在不断发展和壮大自己，增强自身的竞争力；（3）国有经济是公有制经济的主要代表者，在社会主义市场经济中仍然控制着国民经济命脉，对经济发展起主导作用；（4）公有制经济的比重有所减少并不代表公有制的主体地位发生变化，也不会影响我国社会主义的性质。'
+            );
+
+            addGeneral('judge', '辨析题2：社会主义市场经济是法制经济，因此，在市场经济中人们的经济行为可以不受道德规范。',
+                '（1）社会主义市场经济是法制化经济，这是社会主义市场经济的基本特征；（2）在社会主义市场经济建设过程中，应该加强法制建设，以法律约束和规范人民的经济行为；（3）道德规范是人民在生产生活过程中约定俗成的行为规范，对人民的行为也会起到一定的约束和规范作用；（4）在参与市场经济过程中，人民的经济行为既要受法律的约束和规范，同时也要受到的规范的约束。'
+            );
+
+            // ----- 论述题 28~29 -----
+            addGeneral('essay', '分析论述题1：结合邓小平理论形成的社会历史条件说明任何理论的形成都不是一蹴而就的。',
+                '（1）邓小平理论是在和平与发展成为时代主题和新技术革命浪潮兴起的条件下形成和发展起来的；（2）邓小平理论是在总结我国社会主义胜利和挫折历史经验并借鉴其他国家社会主义兴衰成败历史经验的基础上形成和发展起来的；（3）邓小平理论是在我国改革开放和社会主义现代化建设的实践过程中形成和发展起来的；（4）邓小平理论是在马列主义毛泽东思想的理论基础上形成和发展起来的；（5）邓小平理论是马克思主义与当代中国实际相结合的第二次历史性飞跃的理论成果。'
+            );
+
+            addGeneral('essay', '分析论述题2：请根据我国社会主义初级阶段的基本特征分析我国社会主义初级阶段为什么至少需要上百年时间。',
+                '（1）在经济上生产力有了很大发展，但生产力总体水平低，发展不平衡；在政治上建立了人民民主专政的政治制度，但社会主义民主政治的具体制度还不完善不健全；文化上确立了马克思主义的指导地位，但资产阶级和封建剥削阶级思想及小生产习惯势力还存在。（2）是由我国进入社会主义的历史条件所决定的；是由我国现实国情所决定的；是由我国所处的国际环境和国际特点所决定的；是由我国现代化建设的目标的艰巨性所决定的。'
+            );
+
+            // ----- 材料题 30 (含3小问) -----
+            const material30 =
+                `在伊春市，有一片郁郁葱葱的"马永顺林"，这是一位"伐木英雄"在垂暮之年栽下的。林业工人马永顺一生伐木3万多棵，获得奖状和勋章无数，这曾是他最大的骄傲。可是，到了晚年，望着门前的荒山秃岭，他涌起了一种负疚感。于是，他开始偿还"绿债"，成为新时期的"植树英雄"。如今，我国大多数林业工人都与马永顺一样，放下油锯和斧头，走进了造林护林的行列。从"乱砍乱伐"到"封山育林"，从"毁林开荒"到"退耕还林"，这不仅是我国林业发展模式的重大跨越，也是我国坚定不移地实施可持续发展战略的历史见证，标志着我国走上了人与自然和谐发展之路。解振华代表说，在过去相当长的时期里，可持续发展对于中国人来说，还是一个陌生的概念。为了吃饭，人们围湖造田、盲目垦荒，破坏了生态平衡；为了工业化，人们把"机器轰鸣"、"烟囱林立"视为繁荣的象征，忽视了生态环境的承载力。然而，这种粗放型的发展模式，并没有真正解决中国的发展问题。到20世纪90年代初，我国环境污染趋势加剧，生态不断恶化，制约着经济发展，威胁着群众健康。可持续发展战略是中国的必然选择。1992年6月，联合国在巴西召开了"环境与发展"世界首脑会议，通过了《里约宣言》和《21世纪行动议程》。包括中国在内的与会各国一致承诺：把走可持续发展之路作为未来的长期共同的发展道路。可持续发展，就是既考虑当前发展的需要，又考虑未来发展的需要，不以牺牲后代人的利益为代价来满足当代人的利益。这是全世界对人与自然关系重新审视后得出的深刻认识。1994年3月，我国在世界上率先颁布了国家级《21世纪议程》---《中国21世纪议程》，并陆续出台了《关于环境保护若干问题的决定》、《全国生态环境建设规划》和《全国生态环境保护纲要》等一系列纲领性文件，把可持续发展战略贯穿到经济和社会发展的总体布局和长远规划。选择什么样的道路，决定着中国未来的命运。2001年，江泽民同志从中华民族的长远利益和生存发展大计出发，高屋建瓴地指出：人口、资源、环境工作，是"强国富民安天下的大事"。从绿色奥运到南水北调，从西部大开发到绿色青藏铁路，人们可以看到一个全新的理念：可持续发展。近年来，我国在发展经济的同时统筹考虑人口、资源、环境等问题，为控制人口增长、改善生态状况、遏制环境污染做出了不懈努力。随着可持续发展理念的深入人心，"环保"已成为人们日常生活中使用频率最高的词汇之一，"绿色"正成为五彩缤纷的现代中国最时尚的色彩。"可持续发展能力不断增强，生态环境得到改善，资源利用效率显著提高，促进人与自然的和谐，推动整个社会走上生产发展、生活富裕、生态良好的文明发展道路。"这是十六大报告确定的在新世纪新阶段全面建设小康社会的目标之一。`;
+            const subAns30 = [
+                '可持续发展是指既满足当代人需要又不对后代人满足需要的能力构成威胁的发展。',
+                '实施可持续发展战略是世界各国经济社会协调发展的必然要求；是我国对联合国等世界组织作出的承诺；是由我国的国情所决定的。',
+                '实施计划生育政策，控制人口增长；合理开发和利用资源；保护和改善自然生态环境；制定经济、人口、资源、环境协调发展规划。'
+            ];
+            addGeneral('material', '材料题：阅读材料，回答以下问题。', null, material30, [
+                { title: '（1）可持续发展的含义是什么？', answer: subAns30[0] },
+                { title: '（2）我国走可持续发展道路的必要性及意义。', answer: subAns30[1] },
+                { title: '（3）结合身边事例说明实施可持续发展战略的措施。', answer: subAns30[2] }
+            ]);
+
+            // ----- 31 社会主义初级阶段理解 -----
+            addGeneral('essay', '如何理解社会主义初级阶段的科学内涵及其基本特征？', null, null, [
+                { title: '（1）社会主义初级阶段的科学内涵', answer: '①我国社会已经是社会主义社会。我国必须坚持而不能离开社会主义。②我国的社会主义社会还处在初级阶段。我们必须从这个实际出发，而不能超出这个阶段。' },
+                { title: '（2）社会主义初级阶段的基本特征',
+                    answer: '①逐步摆脱不发达状态，基本实现社会主义现代化的历史阶段；②由农业人口占很大比重、主要依靠手工劳动的农业国，逐步转变为非农业人口占多数，包含现代农业和现代服务业的工业化国家的历史阶段；③由自然经济和半自然经济占很大比重，逐步转变为经济市场化程度较高的历史阶段；④由文盲半文言占很大比重，科技教育文化落后，逐步转变为科技教育文化比较发达的历史阶段；⑤由贫困人口占很大比重、人民生活水平比较低，逐步转变为全体人民比较富裕的历史阶段；⑥由地区经济文化很不平衡，通过有先有后的发展，逐步缩小差距的历史阶段；⑦通过改革和探索，建立和完善比较成熟的充满活力的社会主义市场经济体制、社会主义民主政治体制和其他方面的体制的历史阶段；⑧广大人民牢固树立建设有中国特色的社会主义的共同理想，自强不息，锐意进取，艰苦奋斗，勤俭建国，在建设物质文明的同时努力建设精神文明的历史阶段；⑨逐步缩小同世界先进水平的差距，在社会主义基础上实现中华民族伟大复兴的历史阶段。'
+                    }
+            ]);
+
+            // ----- 32~34 简答题 -----
+            addGeneral('short', '简答题：人的全面发展基本内涵。',
+                '促进人的全面发展是马克思主义关于建设社会主义新社会的本质要求。基本内涵：人的不断增长的需要得到满足、人的能力得到全面发展、人的社会关系的全面发展等等。'
+            );
+            addGeneral('short', '简答题：可持续发展的核心内容和主要措施。',
+                '核心内容:是正确处理经济、社会、资源和环境的关系，做到协调发展；既要使人类的各种需要得到满足，个人得到充分发展，又要保护资源和环境，不对后代人的生存和发展构成威胁。措施：坚持计划生育和保护环境的基本国策、资源开发和节约并举、加强环境污染治理等等。'
+            );
+            addGeneral('short', '简答题：试结合邓小平理论精髓分析马克思主义具有与时俱进的理论品质。',
+                '（1）与时俱进，就是党的全部理论和工作要体现时代性，把握规律性，富于创造性。解放思想，实事求是是邓小平理论的精髓，是我们党的思想路线。坚持解放思想和实事求是的思想路线，要求我们不断发展马克思主义，开拓马克思主义的新境界。（2）马克思主义随着实践的发展而不断发展是马克思主义具有生命力的根本所在。如果不顾社会历史条件和现实情况的变化，拘泥于马克思主义经典作家在特定历史条件下，针对具体情况做出的某些个别论断，我们的思想和行动就会因为脱离实际而僵化，就不能顺利前进，甚至会发生失误。（3）只有坚持解放思想，实事求是，与时俱进，才能使我们的思想和行动更加符合客观实际，更加符合社会主义初级阶段的国情和时代发展的要求。坚持解放思想、实事求是的思想路线，弘扬与时俱进的精神，是党在长期执政条件下保持先进性和创造力的决定性因素。（4）否定马克思主义的科学性，丢掉老祖宗，是错误的、有害的；教条式地对待马克思主义，也是错误的、有害的。'
+            );
+
+            // ----- 35 论述 -----
+            addGeneral('essay', '试述按照"三个代表"重要思想要求，加强党的建设的重要性。',
+                '（1）"三个代表"思想的具体内容：始终代表中国先进生产力的发展要求，始终代表中国先进文化的前进方向，始终代表中国最广大人民的根本利益。（2）"三个代表"思想和马克思主义、毛泽东思想、邓小平理论一脉相承。（3）按照"三个代表"思想要求加强党建重要性：是我们党立党之本、执政之基、力量之源；是坚持和发展社会主义的必然要求；能保持党和人民群众的密切联系，使党永远立于不败之地等等。'
+            );
+
+            // ----- 36 材料分析（GDP） -----
+            const gdpMaterial =
+                '材料1：GDP被称为"20世纪最伟大发明之一"，目前世界上还没有更科学的经济总量指标来取代它。但是GDP又远非"完美"——GDP不能直接反映老百姓人均实际收入；GDP不能有效显现环保的品质指标；GDP不能理想制约眼前利益与终极价值的统筹。GDP没有告诉我们，青山绿水又浊了几多？土地资源又没了几顷？朴朴古貌的老弄幽巷又少了几条？\n\n材料2：中国的生态破坏和环境污染已经达到了十分严重的程度。据有关研究机构计算，20世纪90年代中期，我国每年由生态和环境破坏带来的损失占GDP的比重达到8%以上。这说明，我们的经济增长是以生态环境成本为代价的。当生态环境成本用尽以后，继续按照原来的经济增长模式发展经济，将会牺牲人类的健康，使经济增长与我们的生活目标相背离。国内外的实践也已表明，当经济增长达到一定阶段时，对自然生态环境的免费使用必然达到极限。人类要继续发展，必须转换经济增长方式，用新的模式发展经济。';
+            addGeneral('material', '材料分析题：阅读材料，回答问题。', null, gdpMaterial, [
+                { title: '（1）结合材料回答如何正确看待经济发展。',
+                    answer: '发展是硬道理，是党执政兴国的第一要务。发展首先要抓好经济发展。坚持以经济建设为中心，用发展的办法解决前进中的问题，这是我们党领导人民建设中国特色社会主义的一条基本经验。我们必须始终坚持聚精会神搞建设，一心一意谋发展。然而经济发展并不是发展的全面内容，经济发展也不能单纯用GDP这一个指标来衡量。因此，发展必须有新思路，必须辩证地认识和处理与发展相联系的各方面的重大关系。只有这样，我们才能顺利实现既定的战略目标，才能更好地满足人民的物质文化生活需要。'
+                    },
+                { title: '（2）结合材料回答应当树立怎样的发展观。',
+                    answer: '我国经济社会发展还不够全面，地区发展很不平衡，经济的快速增长对资源、环境的压力日益加大，等等。这就要求我们树立全面、协调、可持续的科学发展观。要更加注重统筹兼顾，做到城乡协调发展、区域协调发展、经济社会协调发展、人与自然和谐发展、统筹国内发展和对外开放，推进经济、政治、文化建设的各个环节、各个方面相协调。'
+                    }
+            ]);
+
+            // ----- 37~39 简答题 -----
+            addGeneral('short', '简述"马克思主义的中国化"和"中国化的马克思主义"两个概念的含义。',
+                '"马克思主义的中国化"强调过程。指中国共产党在中国革命和社会主义建设的长期历程中，根据中国的国情和形势的变化，不断地把马克思主义的基本原理同中国革命与建设实际相结合，与时俱进地继承和发展马克思主义的过程。\n\n"中国化的马克思主义"强调结果。指在马克思主义中国化的历程中逐步形成的毛泽东思想、邓小平理论、"三个代表"重要思想和科学发展观。这些理论成果既体现了马克思主义基本原理，又包含了中华民族的优秀思想和中国共产党人的实践经验。'
+            );
+            addGeneral('short', '简述构建"社会主义和谐社会"的立论依据。',
+                '巩固中国共产党执政的社会基础的重要条件。破解经济社会发展的种种难题，妥善应对关键时期有可能遇到的风险和挑战的需要。实现中国共产党执政的历史任务的必然要求，具体包括社会主义市场经济体制的进一步完善、全方位对外开放时期的到来、经济社会整体转型以及全球化对提升一国综合国力竞争的要求等任务。'
+            );
+            addGeneral('short', '如何正确认识毛泽东晚年的错误。',
+                '（1）必须明确毛泽东晚年错误的性质：毛泽东晚年的错误是在探索一条适合中国实际的社会主义建设道路中的失误；是政治错误；是一个伟大的无产阶级革命家的错误。\n（2）必须把毛泽东晚年的错误同毛泽东思想严格区别：毛泽东晚年的错误在理论上的集中表现，就是所谓"无产阶级专政下继续革命的理论"。所谓"无产阶级专政下继续革命的理论"，既不符合马克思列宁主义、也不符合中国实际，明显地脱离了作为马克思列宁主义普遍原理和中国革命具体实践相结合的毛泽东思想的轨道，必须把它们同毛泽东思想完全区别开来。\n（3）必须明确毛泽东晚年的错误在他一生中的位置：毛泽东晚年的错误虽然是严重的，但既不能掩盖更不能否定他对中国革命和建设所作的贡献。他虽然在"文化大革命"中犯了严重错误，但是就他的一生来看，他对中国革命和建设的伟大功绩远远大于他的过失。他的功绩是第一位的，错误是第二位的。'
+            );
+
+            // ----- 40 论述 -----
+            addGeneral('essay', '联系实际，试析加强党的建设的重要性、紧迫性和主要内容。',
+                '（1）中国问题的关键在于党。\n（2）新民主主义革命时期，党注重自身建设，领导人民取得了革命的胜利，党的建设为民主革命的三大法宝之一。\n（3）社会主义革命建设时期，党又面临一系列新问题、新任务、新考验。一是中国共产党成为执政党以后，既要不断学习、探索和掌握社会主义建设的客观规律，带领人民完成建设社会主义的大业，又要克服党内存在的以权谋私、腐化变质、官僚主义等问题，从而使党面临着执政的考验；二是改革开放中，随着社会全面进步的同时，也会出现一些负面影响和消极丑恶现象，资产阶级的腐朽思想会传播到党内，腐蚀党的机体，从而使党面临着改革开放和发展社会主义市场经济的考验；三是国际敌对势力不断对我国加紧"西化"、"分化"，使我党面临着国际敌对势力和平演变的考验。只有加强党的建设，才能完成新时期赋予的历史重任，才能经受住各种考验，立于不败之地。党的十一届三中全会以来，我党在自身建设方面取得了巨大成绩，但仍然存在许多问题。\n（4）在新的历史时期，加强党的建设，就是把党建设成为用毛泽东思想、邓小平理论和"三个代表"重要思想武装起来、全心全意为人民服务、思想上政治上组织上完全巩固、能够经受住各种风险、始终走在时代前列、领导全国人民建设有中国特色社会主义的马克思主义政党。\n（5）加强党的建设，就是要从思想上、组织上、作风上全面加强党的建设。加强党的思想建设，根本的是坚定不移地用毛泽东思想、邓小平理论和"三个代表"重要思想武装全党，充分发挥党的思想政治优势；加强党的组织建设，根本的是把党建设成坚强的领导核心，充分发挥党的组织优势；加强党的作风建设，根本的是坚持全心全意为人民服务的宗旨，充分发挥党密切联系群众的优势。'
+            );
+
+            // ----- 41 三农材料 -----
+            const sanNongMaterial =
+                '党的十六大指出，建设现代农业，发展农村经济，增加农民收入，是全面建设小康社会的重大任务。下表反映的是我国2000年农业现状及2020年农业发展目标等方面具体数字。\n\n（表格数据：农业劳动力占总就业比重 2000年50% → 2020年30%；农业增加值占GDP比重 2000年15.9% → 2020年11.5%；城镇化水平 2000年36.2% → 2020年56%；农民人均可支配收入 2000年2253元 → 2020年约8000元）';
+            addGeneral('material', '材料分析题：结合材料回答以下问题。', null, sanNongMaterial, [
+                { title: '（1）请结合材料说明为什么解决好"三农"问题是全面建设小康社会的重大任务。',
+                    answer: '表中数字表明"三农"问题是现阶段的一个突出问题，农业劳动生产率低，50%的劳动力仅创造15.9%的GDP，城镇化水平低，只有36.2%，农民人均可支配收入低，仅有2253元。这些问题说明无论是农业现代化、农村城镇化、农民收入水平都与全面建设小康社会的目标有较大差距。因此，"三农"问题对全面建设小康社会具有决定意义。没有农业现代化，就没有整个国民经济的现代化；没有农村的全面进步，就没有整个社会的全面进步；没有农民的小康，就没有全国人民的小康。所以，解决好"三农"问题是全面建设小康社会的重大任务。'
+                    },
+                { title: '（2）对比表中农业劳动力占总就业比重数字，你认为应采取哪些措施来降低农业劳动力比重？',
+                    answer: '解决好"三农"问题，降低农业劳动力的比重是一个关键性的因素。解决这一问题的主要措施有：改变农村产业结构，大力发展非农产业，使更多的农民能够从事非农产业。为农民进入城镇就业创造更好的政策环境，加快农业劳动力的转移。大力推进城镇化进程，使农民变为城镇居民，并通过这些措施使农民收入得到大幅度提高。'
+                    }
+            ]);
+
+            // ----- 42~44 简答题 -----
+            addGeneral('short', '"三个代表"重要思想的主要内容是什么？',
+                '中国共产党始终代表中国先进生产力的发展要求，始终代表中国先进文化的前进方向，始终代表中国最广大人民的根本利益。'
+            );
+            addGeneral('short', '论述改革、发展、稳定的关系。',
+                '改革、发展、稳定的关系是我国社会主义建设中要处理好的一个重大的问题。发展是硬道理，中国解决所有问题的关键要靠自己的发展。改革是经济和社会发展的强大动力，是社会主义制度的自我完善和发展。稳定是改革和发展的前提，改革和发展必须要有稳定的政治和社会环境。\n\n要处理好三者之间的关系必须遵循一定的原则：第一，保持改革、发展、稳定在动态中的相互协调和相互促进；第二，把改革的力度、发展的速度和社会可以承受的程度统一起来；第三，把不断改善人民生活作为处理改革、发展、稳定关系的重要结合点。'
+            );
+            addGeneral('short', '试述社会主义本质的科学内涵。',
+                '1992年邓小平在南方谈话中概括了社会主义的本质，即解放生产力，发展生产力，消灭剥削，消除两极分化，最终达到共同富裕。\n\n社会主义本质的基本内涵主要包括以下几方面：第一，把解放和发展生产力纳入社会主义的本质；第二，突出强调消灭剥削、消除两极分化，最终达到共同富裕。'
+            );
+
+            // ----- 45 论述 -----
+            addGeneral('essay', '试述实事求是、群众路线、独立自主三者之间的关系。',
+                '（1）实事求是、群众路线、独立自主是一个辩证统一的整体。实事求是是毛泽东思想的观点和方法论，因此，它在毛泽东思想的活的灵魂三个基本内容中占据着核心的地位，是毛泽东思想的精髓。实事求是作为辩证唯物主义和历史唯物主义的集中概括，同样也是群众路线和独立自主的理论基础，而群众路线和独立自主则不仅体现着实事求是的根本要求和实质，反过来也对实事求是起着很大的制约作用。\n（2）实事求是的首要要求就是一切从实际出发。从实际出发，不仅要从客观的自然条件出发，更重要的是要从社会的实际出发，而社会实际，主要就是人民群众的实际生活状况以及人民群众的根本利益，因此，必须从群众生活和群众实践这个最大的实际出发，才能做到一切从实际出发。只有如实地了解群众的生活与实践中提出的需要，才能提出符合实际的理论、路线、方针和政策。可见，尊重群众、依靠群众是实事求是内在的根本要求。\n（3）独立自主的基本点，就是从中国实际出发，依靠中国人民自己的力量进行革命和建设，使马克思主义的普遍原理同中国革命和建设的具体实践相结合，把中国革命和建设的事业做好，因此，独立自主就是遵照实事求是的根本原则，从中国实际出发，依靠群众进行革命和建设的必然结论。反之，如果离开了群众路线和独立自主的基本原则，也无法做到实事求是，因此，群众路线、独立自主是做到实事求是的根本保证。\n综上所述，毛泽东思想的活的灵魂的三个基本内容之间是相互依赖又相互制约的辩证统一关系，所以它使得毛泽东思想成为一个完整的科学理论体系。'
+            );
+
+            // ----- 46 论十大关系材料 -----
+            const shidaMaterial =
+                '材料1：过去为了结束帝国主义、封建主义和官僚资本主义的统治，为了人民民主革命的胜利，我们就实行了调动一切积极因素的方针，现在为了进行社会主义革命，建设社会主义国家，同样也实行这个方针。\n\n材料2：在国内，工人和农民是基本力量。中间势力是可以争取的力量。反动势力是一种消极因素，但是我们仍然要做好工作，尽量争取化消极因素为积极因素。在国际上，一切可以团结的力量都要团结，不中立的可以争取为中立，反动的也可以分化和利用。反革命是什么因素？是消极因素，破坏因素，是积极因素的反对力量。反革命可不可以转变？当然，有些死心塌地的反革命不会转变。但是，在我们的条件下，他们中间的大多数将来会有不同程度的转变。\n\n材料3：我们的方针是，一切民族，一切国家的长处都要学，政治、经济、科学、技术、文化的一切真正好的东西都要学。但是，必须有分析有批判地学，不能盲目地学，不能一切照抄，机械搬运。他们的短处、缺点，当然不能学。';
+            addGeneral('material', '《论十大关系》材料分析', null, shidaMaterial, [
+                { title: '（1）毛泽东提出中国社会主义建设的基本方针是什么？',
+                    answer: '毛泽东提出中国社会主义建设的基本方针是把国内外一切积极因素调动起来，为社会主义服务。' },
+                { title: '（2）结合材料123，积极因素与消极因素分别指什么？二者关系怎样？我们的态度怎样？',
+                    answer: '积极因素就是对事物发展起促进作用的力量的总和；消极因素就是对事物发展起阻碍作用的力量的总和。积极因素与消极因素既对立，又统一，且互相依赖，在特定条件下，积极因素可以转化为消极因素，消极因素可以转化为积极因素。\n在社会主义社会，工人阶级是基本的积极因素，但由于政治体制、经济体制不完善，由于官僚主义的存在，由于工作上的失误等等，可能在工人阶级内部产生某些消极因素，这就是积极因素暂时地局部地转化为消极因素。相反，反革命等敌对分子是社会主义的消极因素，但大多数可能会有不同程度的转化，做出对社会主义有益的事情，这就是消极因素转化为积极因素。'
+                    },
+                { title: '（3）分析材料3，如何理解毛泽东提出的学习外国经验的方法？',
+                    answer: '毛泽东指出，一切民族、一切国家的长处都要学，但一定要有分析有批判地吸收对我们有益的东西。在对待外国经验上，应正确处理独立自主与学习外国的关系。第一，学习外国有助于打开眼界，看到差距，从而激励独立自主的意志和决心。第二，学习外国有助于增强我国独立自主、自力更生的能力，加快赶超世界先进水平的步伐。'
+                    }
+            ]);
+
+            // 重新设置id（确保连续）
+            questions.forEach((q, idx) => q.id = idx + 1);
+            const total = questions.length;
+            document.getElementById('totalBadge').textContent = `共 ${total} 题`;
+
+            // ============================================================
+            // 2. DOM引用 & 状态
+            // ============================================================
+            let currentIdx = 0;
+            const qArea = document.getElementById('questionArea');
+            const progressText = document.getElementById('progressText');
+            const progressFill = document.getElementById('progressFill');
+            const starBtn = document.getElementById('starBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const randomBtn = document.getElementById('randomBtn');
+            const jumpInput = document.getElementById('jumpInput');
+            const jumpBtn = document.getElementById('jumpBtn');
+
+            // ============================================================
+            // 3. 渲染函数
+            // ============================================================
+            function renderQuestion(index) {
+                try {
+                    if (!questions || questions.length === 0) {
+                        qArea.innerHTML = '<div class="error-msg">题库为空，请检查数据</div>';
+                        return;
+                    }
+                    const q = questions[index];
+                    if (!q) {
+                        qArea.innerHTML = `<div class="error-msg">题目 ${index+1} 不存在</div>`;
+                        return;
+                    }
+
+                    // 更新进度
+                    progressText.textContent = `${index + 1} / ${total}`;
+                    progressFill.style.width = `${((index + 1) / total) * 100}%`;
+                    updateStarBtn(q);
+
+                    let html = '';
+                    const typeMap = {
+                        single: '单选题',
+                        multiple: '多选题',
+                        judge: '辨析题',
+                        essay: '论述题',
+                        short: '简答题',
+                        material: '材料题'
+                    };
+                    const typeClass = q.type || 'essay';
+                    html += `<span class="q-type ${typeClass}">${typeMap[typeClass] || '题目'}</span>`;
+                    html += `<div class="q-title">${q.title || '（题目内容为空）'}</div>`;
+
+                    // 材料
+                    if (q.material) {
+                        html += `<div class="material-box"><span class="mat-label">📄 材料</span>${q.material}</div>`;
+                    }
+
+                    // 选择题选项
+                    if (q.options && q.options.length > 0) {
+                        html += `<div class="options" id="optionsContainer">`;
+                        const labels = 'ABCDEFGHIJKLMN'.split('');
+                        q.options.forEach((opt, idx) => {
+                            const label = labels[idx] || '?';
+                            const isCorrect = q._revealed && q.answer && q.answer.includes(label);
+                            const isWrong = q._revealed && q.answer && !q.answer.includes(label) && q._selected && q
+                                ._selected.includes(label);
+                            let cls = 'option-item';
+                            if (q._revealed) {
+                                cls += ' disabled';
+                                if (isCorrect) cls += ' correct';
+                                if (isWrong) cls += ' wrong';
+                            }
+                            html += `<div class="${cls}" data-opt="${label}" data-qid="${q.id}">
+                                        <span class="opt-label">${label}.</span>
+                                        <span>${opt.replace(/^[A-Z]、/, '').trim()}</span>
+                                     </div>`;
+                        });
+                        html += `</div>`;
+                    }
+
+                    // 子题目（材料题多小问）
+                    if (q.subQuestions && q.subQuestions.length > 0) {
+                        q.subQuestions.forEach((sub, idx) => {
+                            const ansKey = `_subAns_${idx}`;
+                            const revealed = q[ansKey] || false;
+                            html += `<div style="margin-top:16px;padding-top:12px;border-top:1px dashed #e5e7eb;">
+                                        <div style="font-weight:500;font-size:15px;margin-bottom:6px;">${sub.title}</div>
+                                        ${revealed ? `<div class="answer-box show"><span class="ans-label">✅ 答案</span><span class="ans-content">${sub.answer}</span></div>` : `<button class="show-ans-btn" data-subidx="${idx}" data-qid="${q.id}">显示答案</button>`}
+                                     </div>`;
+                        });
+                    }
+
+                    // 非选择题（无选项、无子题目）
+                    if (!q.options && !q.subQuestions) {
+                        if (q._revealed) {
+                            html += `<div class="answer-box show"><span class="ans-label">✅ 参考答案</span><span class="ans-content">${q.answer || '无参考答案'}</span></div>`;
+                        } else {
+                            html += `<button class="show-ans-btn" data-qid="${q.id}">显示答案</button>`;
+                        }
+                    }
+
+                    // 选择题显示正确答案
+                    if (q.options && q.options.length > 0 && q._revealed) {
+                        html += `<div class="answer-box show"><span class="ans-label">✅ 正确答案</span><span class="ans-content">${q.answer}</span></div>`;
+                    }
+
+                    qArea.innerHTML = html;
+
+                    // ----- 绑定事件 -----
+
+                    // 选择题点击
+                    if (q.options && q.options.length > 0) {
+                        const optItems = qArea.querySelectorAll('.option-item:not(.disabled)');
+                        optItems.forEach(el => {
+                            el.addEventListener('click', function() {
+                                if (q._revealed) return;
+                                const label = this.dataset.opt;
+                                if (!q._selected) q._selected = [];
+                                if (q.type === 'single') {
+                                    q._selected = [label];
+                                } else {
+                                    const idx = q._selected.indexOf(label);
+                                    if (idx > -1) q._selected.splice(idx, 1);
+                                    else q._selected.push(label);
+                                }
+                                q._revealed = true;
+                                renderQuestion(index);
+                            });
+                        });
+                    }
+
+                    // 显示答案按钮（主按钮）
+                    qArea.querySelectorAll('.show-ans-btn[data-qid]:not([data-subidx])').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const qid = parseInt(this.dataset.qid);
+                            const qq = questions.find(q => q.id === qid);
+                            if (qq) {
+                                qq._revealed = true;
+                                renderQuestion(index);
+                            }
+                        });
+                    });
+
+                    // 显示答案按钮（子题目）
+                    qArea.querySelectorAll('.show-ans-btn[data-subidx]').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const qid = parseInt(this.dataset.qid);
+                            const subIdx = parseInt(this.dataset.subidx);
+                            const qq = questions.find(q => q.id === qid);
+                            if (qq && qq.subQuestions) {
+                                qq[`_subAns_${subIdx}`] = true;
+                                renderQuestion(index);
+                            }
+                        });
+                    });
+
+                    // 导航按钮状态
+                    prevBtn.disabled = index === 0;
+                    nextBtn.disabled = index === total - 1;
+                    jumpInput.value = index + 1;
+                    jumpInput.max = total;
+                } catch (e) {
+                    qArea.innerHTML = `<div class="error-msg">渲染出错：${e.message}，请刷新页面</div>`;
+                    console.error(e);
+                }
+            }
+
+            // ============================================================
+            // 4. 收藏
+            // ============================================================
+            function updateStarBtn(q) {
+                if (q.collected) {
+                    starBtn.textContent = '★';
+                    starBtn.classList.add('active');
+                } else {
+                    starBtn.textContent = '☆';
+                    starBtn.classList.remove('active');
+                }
+            }
+            starBtn.addEventListener('click', function() {
+                const q = questions[currentIdx];
+                q.collected = !q.collected;
+                updateStarBtn(q);
+            });
+
+            // ============================================================
+            // 5. 导航 & 随机
+            // ============================================================
+            function goTo(index) {
+                if (index < 0 || index >= total) return;
+                currentIdx = index;
+                renderQuestion(currentIdx);
+                document.querySelector('.app').scrollTop = 0;
+            }
+
+            prevBtn.addEventListener('click', () => goTo(currentIdx - 1));
+            nextBtn.addEventListener('click', () => goTo(currentIdx + 1));
+            randomBtn.addEventListener('click', () => {
+                const randomIdx = Math.floor(Math.random() * total);
+                goTo(randomIdx);
+            });
+            jumpBtn.addEventListener('click', function() {
+                let val = parseInt(jumpInput.value);
+                if (isNaN(val) || val < 1) val = 1;
+                if (val > total) val = total;
+                goTo(val - 1);
+            });
+            jumpInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') jumpBtn.click();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.target.tagName === 'INPUT') return;
+                if (e.key === 'ArrowLeft') prevBtn.click();
+                else if (e.key === 'ArrowRight') nextBtn.click();
+            });
+
+            // ============================================================
+            // 6. 启动
+            // ============================================================
+            renderQuestion(0);
+        })();
+    </script>
+</body>
+</html>
