@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>毛概 · 背诵快闪卡片</title>
+    <style>
+        /* === 全局重置 & 基础 === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+            background: #f5f0eb;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            background-image: radial-gradient(circle at 10% 20%, rgba(180, 40, 40, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(180, 40, 40, 0.05) 0%, transparent 50%);
+        }
+
+        /* === 主容器 === */
+        .app-container {
+            width: 100%;
+            max-width: 780px;
+            max-height: 98vh;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 18px 20px 16px;
+            box-shadow: 0 25px 60px rgba(120, 40, 40, 0.18), 0 8px 24px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        /* === 头部 === */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-back {
+            background: rgba(160, 40, 40, 0.08);
+            border: 1px solid rgba(160, 40, 40, 0.15);
+            border-radius: 30px;
+            padding: 6px 14px 6px 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4a2a2a;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            background: rgba(160, 40, 40, 0.15);
+            border-color: rgba(160, 40, 40, 0.30);
+            transform: translateX(-2px);
+        }
+
+        .btn-back:active {
+            transform: scale(0.95);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #a02828;
+            letter-spacing: 0.5px;
+            background: rgba(180, 40, 40, 0.08);
+            padding: 4px 14px 4px 12px;
+            border-radius: 40px;
+            border-left: 4px solid #a02828;
+        }
+
+        .logo span {
+            color: #5a2d2d;
+            font-weight: 400;
+            font-size: 13px;
+            margin-left: 4px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-icon {
+            background: rgba(160, 40, 40, 0.07);
+            border: 1px solid rgba(160, 40, 40, 0.12);
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #4a2a2a;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .btn-icon:hover {
+            background: rgba(160, 40, 40, 0.14);
+            border-color: rgba(160, 40, 40, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .btn-icon:active {
+            transform: scale(0.96);
+        }
+
+        .btn-icon.active {
+            background: #a02828;
+            color: #fff;
+            border-color: #a02828;
+        }
+
+        .btn-icon.active:hover {
+            background: #8a1f1f;
+        }
+
+        .btn-icon .badge {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 0 8px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .btn-icon.active .badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        /* === 进度条 === */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(160, 40, 40, 0.12);
+            border-radius: 4px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #a02828, #c0392b);
+            border-radius: 4px;
+            transition: width 0.35s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            position: absolute;
+            right: 0;
+            top: -18px;
+            font-size: 12px;
+            color: #7a5a5a;
+            font-weight: 500;
+        }
+
+        /* === 卡片包装 === */
+        .card-wrapper {
+            flex: 1 1 auto;
+            min-height: 220px;
+            max-height: 62vh;
+            perspective: 1200px;
+            margin: 4px 0 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            min-height: 220px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            border-radius: 28px;
+            box-shadow: 0 8px 32px rgba(80, 30, 30, 0.10);
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            min-height: 220px;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 28px;
+            padding: 24px 24px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .card-front {
+            background: linear-gradient(145deg, #ffffff, #fcf8f6);
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 1px solid rgba(160, 40, 40, 0.10);
+        }
+
+        .card-front .card-tag {
+            font-size: 12px;
+            font-weight: 600;
+            color: #a02828;
+            background: rgba(160, 40, 40, 0.08);
+            padding: 4px 14px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+            margin-bottom: 14px;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .card-front .question {
+            font-size: 21px;
+            font-weight: 700;
+            color: #2d1a1a;
+            line-height: 1.6;
+            max-width: 92%;
+            margin: 0 auto;
+        }
+
+        .card-front .hint-flip {
+            margin-top: 24px;
+            font-size: 13px;
+            color: #a08080;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(160, 40, 40, 0.04);
+            padding: 5px 16px;
+            border-radius: 40px;
+            border: 1px dashed rgba(160, 40, 40, 0.10);
+            flex-shrink: 0;
+        }
+
+        .card-front .hint-flip svg {
+            opacity: 0.5;
+        }
+
+        .card-back {
+            background: linear-gradient(145deg, #fcf8f6, #f5ede8);
+            transform: rotateY(180deg);
+            align-items: flex-start;
+            justify-content: flex-start;
+            text-align: left;
+            border: 1px solid rgba(160, 40, 40, 0.08);
+        }
+
+        .card-back::-webkit-scrollbar {
+            width: 4px;
+        }
+        .card-back::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .card-back::-webkit-scrollbar-thumb {
+            background: rgba(160, 40, 40, 0.20);
+            border-radius: 10px;
+        }
+
+        .card-back .back-content {
+            width: 100%;
+            font-size: 15px;
+            line-height: 1.8;
+            color: #2d1a1a;
+        }
+
+        .card-back .back-content strong {
+            color: #a02828;
+            font-weight: 700;
+        }
+
+        .card-back .back-content .section-title {
+            display: block;
+            font-weight: 700;
+            font-size: 16px;
+            color: #3d1f1f;
+            margin: 10px 0 4px;
+            border-bottom: 2px solid rgba(160, 40, 40, 0.10);
+            padding-bottom: 4px;
+        }
+
+        .card-back .back-content .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .card-back .back-content ul,
+        .card-back .back-content .list {
+            padding-left: 18px;
+            margin: 4px 0 6px;
+        }
+
+        .card-back .back-content li,
+        .card-back .back-content .list-item {
+            margin-bottom: 3px;
+            list-style-type: none;
+            position: relative;
+            padding-left: 16px;
+        }
+
+        .card-back .back-content li::before,
+        .card-back .back-content .list-item::before {
+            content: "•";
+            color: #a02828;
+            font-weight: 700;
+            position: absolute;
+            left: 0;
+        }
+
+        .card-back .back-content .highlight-box {
+            background: rgba(160, 40, 40, 0.05);
+            border-left: 3px solid #a02828;
+            padding: 8px 14px;
+            border-radius: 0 8px 8px 0;
+            margin: 6px 0;
+        }
+
+        .card-back .back-content .memorize {
+            background: rgba(160, 40, 40, 0.07);
+            border-radius: 12px;
+            padding: 8px 14px;
+            margin: 8px 0 0;
+            font-weight: 600;
+            color: #3d1f1f;
+            border: 1px solid rgba(160, 40, 40, 0.08);
+            font-size: 14px;
+        }
+
+        .card-back .back-content .memorize::before {
+            content: "📌 ";
+        }
+
+        /* === 底部控制栏 === */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .controls .nav-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .btn-nav {
+            background: rgba(160, 40, 40, 0.06);
+            border: 1px solid rgba(160, 40, 40, 0.10);
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #3d2a2a;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 68px;
+            justify-content: center;
+        }
+
+        .btn-nav:hover:not(:disabled) {
+            background: rgba(160, 40, 40, 0.12);
+            border-color: rgba(160, 40, 40, 0.20);
+        }
+
+        .btn-nav:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
+        .btn-nav:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .btn-nav .arrow {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .btn-fav {
+            background: rgba(160, 40, 40, 0.06);
+            border: 1px solid rgba(160, 40, 40, 0.10);
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #3d2a2a;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-fav:hover {
+            background: rgba(160, 40, 40, 0.12);
+            border-color: rgba(160, 40, 40, 0.20);
+        }
+
+        .btn-fav.active {
+            background: #a02828;
+            color: #fff;
+            border-color: #a02828;
+        }
+
+        .btn-fav.active:hover {
+            background: #8a1f1f;
+        }
+
+        .btn-fav svg {
+            flex-shrink: 0;
+        }
+
+        .counter {
+            font-size: 13px;
+            color: #7a5a5a;
+            font-weight: 500;
+            background: rgba(160, 40, 40, 0.04);
+            padding: 4px 14px;
+            border-radius: 30px;
+            white-space: nowrap;
+            min-width: 56px;
+            text-align: center;
+        }
+
+        /* === 空状态 === */
+        .empty-state {
+            text-align: center;
+            padding: 30px 10px;
+            color: #7a5a5a;
+            width: 100%;
+        }
+        .empty-state .emoji {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* === 响应式 === */
+        @media (max-width: 600px) {
+            .app-container {
+                padding: 12px 12px 10px;
+                border-radius: 28px;
+            }
+            .card-wrapper {
+                min-height: 180px;
+                max-height: 58vh;
+            }
+            .card {
+                min-height: 180px;
+            }
+            .card-face {
+                min-height: 180px;
+                padding: 18px 16px 14px;
+            }
+            .card-front .question {
+                font-size: 18px;
+            }
+            .card-back .back-content {
+                font-size: 14px;
+                line-height: 1.7;
+            }
+            .card-back .back-content .section-title {
+                font-size: 15px;
+            }
+            .btn-back {
+                font-size: 12px;
+                padding: 4px 10px 4px 8px;
+            }
+            .logo {
+                font-size: 17px;
+                padding: 2px 10px 2px 8px;
+            }
+            .logo span {
+                font-size: 11px;
+            }
+            .btn-icon {
+                font-size: 12px;
+                padding: 4px 10px;
+            }
+            .btn-nav {
+                padding: 6px 10px;
+                font-size: 12px;
+                min-width: 50px;
+            }
+            .btn-fav {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            .counter {
+                font-size: 12px;
+                padding: 2px 10px;
+                min-width: 44px;
+            }
+            .controls {
+                gap: 4px;
+            }
+            .header {
+                margin-bottom: 8px;
+            }
+            .card-front .hint-flip {
+                font-size: 12px;
+                padding: 4px 12px;
+                margin-top: 16px;
+            }
+            .progress-bar {
+                margin-bottom: 8px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .app-container {
+                padding: 8px 6px 8px;
+                border-radius: 20px;
+            }
+            .card-face {
+                padding: 14px 12px 12px;
+                min-height: 150px;
+            }
+            .card-wrapper {
+                min-height: 150px;
+                max-height: 55vh;
+            }
+            .card {
+                min-height: 150px;
+            }
+            .card-front .question {
+                font-size: 16px;
+            }
+            .card-back .back-content {
+                font-size: 13px;
+            }
+            .btn-back {
+                font-size: 11px;
+                padding: 3px 8px 3px 6px;
+            }
+            .logo {
+                font-size: 14px;
+                padding: 2px 6px;
+            }
+            .btn-nav {
+                padding: 4px 8px;
+                font-size: 11px;
+                min-width: 40px;
+            }
+            .btn-nav .arrow {
+                font-size: 14px;
+            }
+            .btn-fav {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+            .counter {
+                font-size: 10px;
+                padding: 2px 6px;
+                min-width: 36px;
+            }
+            .header-actions .btn-icon {
+                font-size: 10px;
+                padding: 3px 8px;
+            }
+        }
+
+        /* === 进入动画 === */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-wrapper {
+            animation: fadeSlideUp 0.35s ease forwards;
+        }
+
+        .fav-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #a02828;
+            margin-left: 4px;
+            transition: all 0.2s;
+        }
+        .fav-dot.hidden {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" id="app">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-left">
+                <a class="btn-back" href="index.html" title="返回首页">
+                    ← 返回
+                </a>
+                <div class="logo">📖 毛概 <span>快闪卡片</span></div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-icon" id="toggleShuffle" title="重新随机排列">
+                    🔀 随机
+                </button>
+                <button class="btn-icon" id="toggleFavView" title="只看收藏">
+                    ⭐ 收藏 <span class="badge" id="favCount">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 进度条 -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-text" id="progressText">1 / 20</div>
+        </div>
+
+        <!-- 卡片 -->
+        <div class="card-wrapper" id="cardWrapper">
+            <div class="card" id="card">
+                <div class="card-face card-front" id="cardFront">
+                    <span class="card-tag" id="cardTag">知识点</span>
+                    <div class="question" id="questionText">点击翻转查看答案</div>
+                    <div class="hint-flip">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9"/></svg>
+                        点击翻转
+                    </div>
+                </div>
+                <div class="card-face card-back" id="cardBack">
+                    <div class="back-content" id="answerContent">
+                        <!-- 动态渲染 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部控制 -->
+        <div class="controls">
+            <div class="nav-group">
+                <button class="btn-nav" id="prevBtn" title="上一题">
+                    <span class="arrow">‹</span> 上一题
+                </button>
+                <button class="btn-nav" id="nextBtn" title="下一题">
+                    下一题 <span class="arrow">›</span>
+                </button>
+            </div>
+            <div style="display:flex; gap:4px; align-items:center; flex-wrap:wrap;">
+                <button class="btn-fav" id="favBtn" title="收藏本题">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    收藏
+                </button>
+                <span class="counter" id="counterDisplay">1 / 20</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  1. 卡片数据（从文档中精炼提取）
+        // ============================================================
+        const CARD_DATA = [{
+            id: 1,
+            tag: '过渡时期总路线',
+            front: '党在过渡时期总路线的完整表述是什么？',
+            back: `
+          <span class="section-title">📌 完整表述</span>
+          <div class="highlight-box">
+            <strong>"党在这个过渡时期的总路线和总任务，是要在一个相当长的时期内，逐步实现国家的社会主义工业化，并逐步实现国家对农业、对手工业和对资本主义工商业的社会主义改造。"</strong>
+          </div>
+          <span class="section-title">📌 核心概括：一化三改</span>
+          <div class="list">
+            <div class="list-item"><strong>「一化」</strong> — 社会主义工业化，是总路线的<strong>「主体」</strong>，建立重工业基础。</div>
+            <div class="list-item"><strong>「三改」</strong> — 对农业、手工业、资本主义工商业的社会主义改造，是总路线的<strong>「两翼」</strong>，变革生产关系。</div>
+            <div class="list-item"><strong>关系：</strong>工业化是改造的物质基础，改造是工业化的重要条件，二者如同鸟的身体和翅膀，协同推进。</div>
+          </div>
+          <div class="memorize">一化是主体，三改是两翼；工业化是目标，改造是手段。</div>
+        `
+        }, {
+            id: 2,
+            tag: '过渡时期总路线',
+            front: '过渡时期总路线的提出依据有哪些？',
+            back: `
+          <span class="section-title">📌 提出依据（四方面）</span>
+          <div class="list">
+            <div class="list-item"><strong>① 理论依据：</strong>马克思列宁主义关于过渡时期的学说 — 无产阶级专政下利用国家政权力量，逐步消灭私有制，建立社会主义经济基础。</div>
+            <div class="list-item"><strong>② 现实物质基础：</strong>国营经济壮大，掌握国民经济命脉；国民经济恢复任务于1952年底基本完成，具备向社会主义过渡的条件。</div>
+            <div class="list-item"><strong>③ 客观必要性：</strong>分散的个体农业和手工业无法满足工业化需求；资本主义工商业的盲目性与国家计划经济建设矛盾日益突出。</div>
+            <div class="list-item"><strong>④ 国际环境：</strong>社会主义阵营的支援和苏联快速实现工业化的成功经验，产生了积极影响。</div>
+          </div>
+          <div class="memorize">理论有来源，国情有急需，工业化是目标，改造是手段。</div>
+        `
+        }, {
+            id: 3,
+            tag: '过渡时期总路线',
+            front: '"一化三改"的具体内容及相互关系是什么？',
+            back: `
+          <span class="section-title">📌 「一化」 — 社会主义工业化</span>
+          <div>指建立强大的重工业基础，为国家现代化提供物质前提，是总路线的<strong>「主体」</strong>。</div>
+          <span class="section-title">📌 「三改」 — 三大改造</span>
+          <div class="list">
+            <div class="list-item">对<strong>个体农业</strong>的社会主义改造</div>
+            <div class="list-item">对<strong>个体手工业</strong>的社会主义改造</div>
+            <div class="list-item">对<strong>资本主义工商业</strong>的社会主义改造</div>
+          </div>
+          <div>三改是总路线的<strong>「两翼」</strong>，旨在变革生产关系，确立社会主义公有制。</div>
+          <span class="section-title">📌 二者关系</span>
+          <div class="highlight-box">
+            <strong>相辅相成、相互促进。</strong>工业化是改造的物质基础，改造是工业化的重要条件，缺一不可，如同鸟的身体和翅膀协同推进。
+          </div>
+        `
+        }, {
+            id: 4,
+            tag: '改造道路',
+            front: '适合中国特色社会主义的改造道路有哪些核心原则？',
+            back: `
+          <span class="section-title">📌 四条核心原则</span>
+          <div class="list">
+            <div class="list-item"><strong>① 工业化与改造同时并举：</strong>「一化」与「三改」同步推进，工业化提供物质基础，改造变革生产关系，互相支撑。</div>
+            <div class="list-item"><strong>② 积极引导、逐步过渡：</strong>针对不同对象设计阶梯式路径，不搞一步到位。农业和手工业：互助组→初级社→高级社；资本主义工商业：委托加工→统购包销→公私合营。</div>
+            <div class="list-item"><strong>③ 和平方法改造：</strong>最具中国特色的创举。对民族资产阶级实行<strong>和平赎买</strong>，通过给利息、安排工作等方式，有偿购买私营企业，避免激烈社会震荡。</div>
+            <div class="list-item"><strong>④ 防止急于求成：</strong>实事求是，认识到改造的长期性和复杂性，根据生产力水平和社会承受力把握进度。</div>
+          </div>
+          <div class="memorize">工业化是基础，逐步过渡是策略，和平赎买是特色，稳步推进是原则。</div>
+        `
+        }, {
+            id: 5,
+            tag: '改造道路',
+            front: '改造道路如何实现"和平赎买"？有何意义？',
+            back: `
+          <span class="section-title">📌 和平赎买的方式</span>
+          <div class="list">
+            <div class="list-item">对民族资产阶级<strong>不采取暴力剥夺</strong>，而是通过<strong>国家资本主义</strong>形式（委托加工、统购包销、公私合营等）逐步将私有制转化为公有制。</div>
+            <div class="list-item">通过<strong>给利息、安排工作</strong>等方式，有偿地购买私营企业。</div>
+          </div>
+          <span class="section-title">📌 意义</span>
+          <div class="highlight-box">
+            <strong>既消灭了剥削制度，又避免了激烈社会震荡</strong>，成功把资本家改造为自食其力的劳动者。这是马克思主义中国化的成功范例。
+          </div>
+          <div class="memorize">和平赎买是特色，消灭剥削不震荡，改造与团结并重。</div>
+        `
+        }, {
+            id: 6,
+            tag: '改造道路',
+            front: '改造道路在农业和手工业方面采取了怎样的渐进路径？',
+            back: `
+          <span class="section-title">📌 农业与手工业的阶梯式改造</span>
+          <div class="list">
+            <div class="list-item"><strong>第一步：互助组</strong> — 农民自愿组织起来，进行劳动互助，保留私有制。</div>
+            <div class="list-item"><strong>第二步：初级社</strong> — 土地入股，统一经营，开始出现公有成分。</div>
+            <div class="list-item"><strong>第三步：高级社</strong> — 土地集体所有，完全实现社会主义公有制。</div>
+          </div>
+          <div class="highlight-box">
+            <strong>核心思想：</strong>不强行推开高级社，而是让农民在实践中自愿接受，逐步过渡。这体现了"积极引导、逐步过渡"的原则。
+          </div>
+          <div class="memorize">互助组→初级社→高级社，循序渐进，农民自愿接受。</div>
+        `
+        }, {
+            id: 7,
+            tag: '调动积极因素',
+            front: '「调动一切积极因素为社会主义事业服务」的核心内涵是什么？',
+            back: `
+          <span class="section-title">📌 核心内涵</span>
+          <div class="highlight-box">
+            调动一切<strong>直接的和间接的</strong>积极因素，尽可能克服消极因素，并努力<strong>化消极因素为积极因素</strong>，团结全党内外、国内国外一切可以团结的力量，共同为建设社会主义伟大事业服务。
+          </div>
+          <div><strong>核心方法论：</strong>统筹兼顾、妥善安排，既要看到有利条件，也要正视困难矛盾。</div>
+          <span class="section-title">📌 历史地位</span>
+          <div>毛泽东在《论十大关系》中提出，标志着党探索中国社会主义建设道路的<strong>良好开端</strong>，是社会主义建设初期最重要的战略指导原则。</div>
+          <div class="memorize">一个核心：调动积极因素；辩证转化：化消极变积极。</div>
+        `
+        }, {
+            id: 8,
+            tag: '调动积极因素',
+            front: '落实「调动一切积极因素」方针的两大根本保证是什么？',
+            back: `
+          <span class="section-title">📌 两大根本保证</span>
+          <div class="list">
+            <div class="list-item"><strong>① 必须坚持中国共产党的领导。</strong>党的领导是调动一切积极因素的政治前提和根本保证，只有坚持党的领导，才能把全国各族人民、各民主党派、各阶层人士有效组织和团结起来，形成统一意志和强大合力。</div>
+            <div class="list-item"><strong>② 必须发展社会主义民主政治。</strong>正确处理人民内部矛盾，实行<strong>"长期共存、互相监督"</strong>的方针，让各民主党派和各界人士有渠道发表意见、参与国家建设，营造生动活泼的政治局面。</div>
+          </div>
+          <div class="memorize">两个保证：党的领导和民主政治。</div>
+        `
+        }, {
+            id: 9,
+            tag: '调动积极因素',
+            front: '「调动一切积极因素」有哪些具体实践路径？',
+            back: `
+          <span class="section-title">📌 具体实践路径</span>
+          <div class="list">
+            <div class="list-item"><strong>① 统筹兼顾国家、集体、个人三者利益，</strong>妥善安排轻重工业、沿海与内地、经济与国防等重大关系。</div>
+            <div class="list-item"><strong>② 团结一切可以团结的力量，</strong>既依靠工人、农民等基本力量，也争取民族资产阶级、知识分子、海外华侨等积极力量。</div>
+            <div class="list-item"><strong>③ 辩证对待消极因素，</strong>不是简单排斥，而是通过教育、改造和引导，努力将其转化为积极因素（如将战犯、反革命分子改造为自食其力的新人）。</div>
+          </div>
+          <div class="memorize">三个兼顾：国家、集体、个人；辩证转化：化消极变积极。</div>
+        `
+        }, {
+            id: 10,
+            tag: '社会矛盾思想',
+            front: '正确认识和处理社会主义社会矛盾的思想理论背景是什么？',
+            back: `
+          <span class="section-title">📌 理论背景与核心判断</span>
+          <div class="highlight-box">
+            这一思想<strong>突破了斯大林长期认为"社会主义社会无矛盾"的教条</strong>，第一次系统阐述了社会主义社会同样存在矛盾，并指出<strong>矛盾是推动社会主义社会发展的根本动力</strong>。
+          </div>
+          <span class="section-title">📌 历史意义</span>
+          <div>这是毛泽东对唯物辩证法的创造性运用，为正确处理人民内部矛盾提供了理论指导，是社会主义建设道路初步探索的重要成果。</div>
+          <div class="memorize">社会主义有矛盾，矛盾是发展动力。</div>
+        `
+        }, {
+            id: 11,
+            tag: '社会矛盾思想',
+            front: '社会主义社会的两类矛盾分别是什么？如何区分？',
+            back: `
+          <span class="section-title">📌 两类不同性质的社会矛盾</span>
+          <div class="list">
+            <div class="list-item"><strong>① 对抗性的敌我矛盾</strong> — 基于根本利益对立而产生的矛盾（如人民群众与敌对分子、反革命分子之间的矛盾）。利益不可调和，属于<strong>分清敌我</strong>的问题。</div>
+            <div class="list-item"><strong>② 非对抗性的人民内部矛盾</strong> — 在人民根本利益一致基础上的矛盾（如工人与农民之间、国家与集体之间、不同部门之间的具体利益冲突）。属于<strong>分清是非</strong>的问题，不具有对抗性。</div>
+          </div>
+          <div class="highlight-box">
+            <strong>严格区分两类矛盾，是正确处理社会主义社会矛盾的前提。</strong>
+          </div>
+          <div class="memorize">两类矛盾记分清：敌我矛盾（对抗），人民内部矛盾（非对抗）。</div>
+        `
+        }, {
+            id: 12,
+            tag: '社会矛盾思想',
+            front: '两类社会矛盾分别用什么方法解决？',
+            back: `
+          <span class="section-title">📌 不同矛盾，不同方法</span>
+          <div class="list">
+            <div class="list-item"><strong>敌我矛盾 → 专政方法：</strong>运用国家机器，依靠法律和强制力量，镇压敌对势力的反抗和破坏，以维护社会主义制度和人民的根本利益。</div>
+            <div class="list-item"><strong>人民内部矛盾 → 民主方法：</strong>运用说服教育、讨论批评、统筹兼顾、合理安排的方式，实行<strong>"团结—批评—团结"</strong>的方针（从团结的愿望出发，通过批评或斗争使矛盾得到解决，从而在新的基础上达到新的团结）。</div>
+          </div>
+          <div class="highlight-box">
+            <strong>不能使用强制命令和行政手段去压制人民内部矛盾。</strong>
+          </div>
+          <div class="memorize">专政民主要分明：暴力vs说服，团结—批评—团结。</div>
+        `
+        }, {
+            id: 13,
+            tag: '社会矛盾思想',
+            front: '正确处理人民内部矛盾的根本目的是什么？',
+            back: `
+          <span class="section-title">📌 根本目的</span>
+          <div class="list">
+            <div class="list-item"><strong>① 调动一切积极因素，</strong>化消极因素为积极因素。</div>
+            <div class="list-item"><strong>② 团结全国各族人民，</strong>巩固社会主义制度。</div>
+            <div class="list-item"><strong>③ 把党和国家的工作重心逐步转移到发展社会生产力上来，</strong>以满足人民日益增长的物质文化需要。</div>
+          </div>
+          <div class="highlight-box">
+            正确处理人民内部矛盾，是这一时期国家政治生活的<strong>主题</strong>。其落脚点不是斗争，而是<strong>团结和发展</strong>。
+          </div>
+          <div class="memorize">团结发展为使命，落脚点是搞建设。</div>
+        `
+        }, {
+            id: 14,
+            tag: '工业化道路',
+            front: '走中国工业化道路的核心内涵与基本方针是什么？',
+            back: `
+          <span class="section-title">📌 核心内涵</span>
+          <div class="highlight-box">
+            中国工业化道路的核心，就是<strong>正确处理重工业、轻工业和农业的发展关系</strong>。
+          </div>
+          <span class="section-title">📌 基本方针</span>
+          <div class="list">
+            <div class="list-item"><strong>"以农业为基础，以工业为主导，以农轻重为序"</strong> 发展国民经济。</div>
+            <div class="list-item"><strong>"重工业和轻工业同时并举"</strong>。</div>
+          </div>
+          <div class="highlight-box">
+            这一方针<strong>突破了苏联片面发展重工业的旧模式</strong>，强调三者协调发展，充分考虑了我国农民占人口绝大多数的基本国情。
+          </div>
+          <div class="memorize">农为基础工主导，轻重并举抓协调。</div>
+        `
+        }, {
+            id: 15,
+            tag: '工业化道路',
+            front: '走中国工业化道路有哪些具体实践要求？',
+            back: `
+          <span class="section-title">📌 四个关键环节</span>
+          <div class="list">
+            <div class="list-item"><strong>① 必须采取正确的经济建设方针。</strong>统筹兼顾国家、集体和个人利益，合理安排积累和消费的比例，避免急躁冒进或消极保守。</div>
+            <div class="list-item"><strong>② 必须调整和完善所有制结构。</strong>在坚持公有制为主体的前提下，允许和鼓励一定范围内的个体经济、国家资本主义经济作为补充。</div>
+            <div class="list-item"><strong>③ 必须积极探索适合我国情况的经济体制和运行机制。</strong>改革过分集中的管理体制，适当下放权力，注意运用价值规律和市场调节的作用。</div>
+            <div class="list-item"><strong>④ 必须坚持独立自主、自力更生为主，争取外援为辅。</strong>充分利用国内资源，有选择地学习外国先进技术和管理经验。</div>
+          </div>
+          <div class="memorize">方针所有制和体制，四条要求要记牢。</div>
+        `
+        }, {
+            id: 16,
+            tag: '工业化道路',
+            front: '中国工业化道路与苏联模式的根本区别是什么？',
+            back: `
+          <span class="section-title">📌 苏联模式</span>
+          <div>长期实行<strong>"重工业优先、轻视农业"</strong>的片面路线，导致农业长期停滞，国民经济比例失调。</div>
+          <span class="section-title">📌 中国工业化道路</span>
+          <div class="highlight-box">
+            <strong>强调"农轻重并举"</strong>，把农业发展放在首位，充分考虑了我国农民占人口绝大多数的基本国情，体现了<strong>实事求是</strong>的原则。
+          </div>
+          <span class="section-title">📌 历史意义</span>
+          <div>是中国共产党独立自主探索符合中国国情的社会主义建设道路的<strong>首次系统尝试</strong>，从根本上纠正了照搬苏联模式的倾向，为中国特色社会主义工业化理论提供了宝贵的思想源泉。</div>
+          <div class="memorize">独立自主不照抄，苏联模式要改造。</div>
+        `
+        }, {
+            id: 17,
+            tag: '改革开放',
+            front: '社会主义改革开放的性质与定位是什么？',
+            back: `
+          <span class="section-title">📌 改革是中国的第二次革命</span>
+          <div class="list">
+            <div class="list-item">不是对原有体制的细枝末节修补，而是对体制的<strong>根本性变革</strong>，触及经济、政治、科技、教育等各个领域。</div>
+            <div class="list-item">不是否定社会主义制度，而是<strong>社会主义制度的自我完善和发展</strong>，在坚持社会主义基本制度的前提下，改变不适应生产力发展的管理体制和运行机制。</div>
+          </div>
+          <span class="section-title">📌 改革是社会主义社会发展的直接动力</span>
+          <div>通过调整生产关系和上层建筑中不适应的部分，<strong>解放和发展了被束缚的社会生产力</strong>，推动社会全面进步。</div>
+          <span class="section-title">📌 对外开放是基本国策</span>
+          <div>全方位、多层次、宽领域的开放，包括经济、科技、教育、文化等领域。</div>
+          <div class="memorize">改革是革命，开放是国策。</div>
+        `
+        }, {
+            id: 18,
+            tag: '改革开放',
+            front: '对外开放的两条原则底线是什么？',
+            back: `
+          <span class="section-title">📌 原则底线一</span>
+          <div class="highlight-box">
+            <strong>正确对待资本主义社会创造的现代文明成果。</strong>善于学习借鉴先进技术和管理经验，但<strong>不照搬西方政治制度</strong>。
+          </div>
+          <span class="section-title">📌 原则底线二</span>
+          <div class="highlight-box">
+            <strong>高度珍惜并坚决维护独立自主权利。</strong>在开放中始终保持主权和尊严，<strong>绝不牺牲国家利益换取一时发展</strong>。
+          </div>
+          <div class="memorize">学习不照搬，独立自主不能丢。</div>
+        `
+        }, {
+            id: 19,
+            tag: '改革开放',
+            front: '社会主义市场经济理论的三大突破是什么？',
+            back: `
+          <span class="section-title">📌 三大突破</span>
+          <div class="list">
+            <div class="list-item"><strong>第一，计划经济和市场经济不是划分社会制度的标志。</strong>计划经济不等于社会主义，资本主义也有计划；市场经济不等于资本主义，社会主义也有市场。它们都是资源配置的方式。</div>
+            <div class="list-item"><strong>第二，计划和市场都是经济手段，</strong>对经济活动的调节各有优势和长处。计划手段长于宏观平衡和长期规划，市场手段长于微观激励和效率提升。要把两者结合起来，取长补短。</div>
+            <div class="list-item"><strong>第三，市场经济作为资源配置的一种方式，本身不具有制度属性。</strong>与资本主义结合就是资本主义市场经济，与社会主义结合就是社会主义市场经济，后者要在宏观调控下让市场在资源配置中起基础性作用。</div>
+          </div>
+          <div class="memorize">计划与市场，不是姓"社""资"；二者皆手段，结合是优势。</div>
+        `
+        }, {
+            id: 20,
+            tag: '改革开放',
+            front: '改革开放与社会主义市场经济的内在联系是什么？',
+            back: `
+          <span class="section-title">📌 内在联系</span>
+          <div class="highlight-box">
+            改革开放是市场经济体制得以建立的<strong>动力和途径</strong> — 没有改革就破除不了计划经济的旧体制，没有开放就引进不了市场的竞争机制。
+          </div>
+          <div class="highlight-box">
+            社会主义市场经济体制的确立，是改革开放<strong>最重大的成果和标志</strong>。
+          </div>
+          <div>两者<strong>互为因果、相互促进</strong>，共同构成了中国特色社会主义经济建设最鲜明的实践特征。</div>
+          <span class="section-title">📌 记忆口诀</span>
+          <div class="memorize">改革是革命，开放是国策；计划与市场，不是姓"社""资"；二者皆手段，结合是优势；独立自主不能丢，制度属性看结合。</div>
+        `
+        }];
+
+        // ============================================================
+        //  2. 应用状态
+        // ============================================================
+        const state = {
+            cards: [],
+            allCards: [],
+            currentIndex: 0,
+            isFlipped: false,
+            favView: false,
+            favorites: new Set(),
+            shuffled: false,
+        };
+
+        // DOM 引用
+        const cardEl = document.getElementById('card');
+        const cardFront = document.getElementById('cardFront');
+        const cardBack = document.getElementById('cardBack');
+        const questionText = document.getElementById('questionText');
+        const answerContent = document.getElementById('answerContent');
+        const cardTag = document.getElementById('cardTag');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const counterDisplay = document.getElementById('counterDisplay');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const favBtn = document.getElementById('favBtn');
+        const toggleShuffle = document.getElementById('toggleShuffle');
+        const toggleFavView = document.getElementById('toggleFavView');
+        const favCount = document.getElementById('favCount');
+
+        // ============================================================
+        //  3. 核心函数
+        // ============================================================
+
+        function loadFavorites() {
+            try {
+                const saved = localStorage.getItem('maogai_favorites');
+                if (saved) {
+                    const arr = JSON.parse(saved);
+                    state.favorites = new Set(arr);
+                }
+            } catch (_) { /* ignore */ }
+            updateFavCount();
+        }
+
+        function saveFavorites() {
+            try {
+                localStorage.setItem('maogai_favorites', JSON.stringify([...state.favorites]));
+            } catch (_) { /* ignore */ }
+            updateFavCount();
+        }
+
+        function updateFavCount() {
+            const count = state.favorites.size;
+            favCount.textContent = count;
+            if (state.favView && count === 0) {
+                state.favView = false;
+                toggleFavView.classList.remove('active');
+                rebuildCardList();
+            }
+        }
+
+        function isCurrentFav() {
+            if (!state.cards.length) return false;
+            const card = state.cards[state.currentIndex];
+            return card && state.favorites.has(card.id);
+        }
+
+        function updateFavButton() {
+            const fav = isCurrentFav();
+            favBtn.classList.toggle('active', fav);
+            favBtn.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="${fav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            ${fav ? '已收藏' : '收藏'}
+          `;
+        }
+
+        function toggleFavorite() {
+            if (!state.cards.length) return;
+            const card = state.cards[state.currentIndex];
+            if (!card) return;
+            if (state.favorites.has(card.id)) {
+                state.favorites.delete(card.id);
+            } else {
+                state.favorites.add(card.id);
+            }
+            saveFavorites();
+            updateFavButton();
+            updateFavCount();
+            if (state.favView) {
+                rebuildCardList();
+            }
+        }
+
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function rebuildCardList() {
+            let list = [...state.allCards];
+
+            if (state.favView) {
+                list = list.filter(c => state.favorites.has(c.id));
+                if (list.length === 0) {
+                    showEmptyState();
+                    return;
+                }
+            }
+
+            if (state.shuffled) {
+                list = shuffleArray(list);
+            }
+
+            state.cards = list;
+            state.currentIndex = 0;
+            state.isFlipped = false;
+            cardEl.classList.remove('flipped');
+            renderCard();
+            updateProgress();
+            updateButtons();
+            updateFavButton();
+        }
+
+        function showEmptyState() {
+            state.cards = [];
+            state.currentIndex = 0;
+            state.isFlipped = false;
+            cardEl.classList.remove('flipped');
+            questionText.textContent = '暂无收藏卡片';
+            cardTag.textContent = '💡 提示';
+            answerContent.innerHTML = `
+            <div class="empty-state">
+              <div class="emoji">📭</div>
+              <p>还没有收藏任何卡片。<br>点击卡片下方的 ⭐ 收藏按钮，将重点题目收藏起来反复记忆。</p>
+              <p style="margin-top:12px;font-size:14px;color:#a08080;">点击右上角「收藏」按钮可退出收藏视图。</p>
+            </div>
+          `;
+            progressFill.style.width = '0%';
+            progressText.textContent = '0 / 0';
+            counterDisplay.textContent = '0 / 0';
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            favBtn.classList.remove('active');
+            favBtn.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            收藏
+          `;
+            progressFill.style.width = '0%';
+        }
+
+        function renderCard() {
+            if (!state.cards.length) {
+                showEmptyState();
+                return;
+            }
+
+            const card = state.cards[state.currentIndex];
+            if (!card) return;
+
+            cardTag.textContent = card.tag;
+            questionText.textContent = card.front;
+            answerContent.innerHTML = card.back;
+
+            cardEl.classList.remove('flipped');
+            state.isFlipped = false;
+
+            updateProgress();
+            updateButtons();
+            updateFavButton();
+        }
+
+        function updateProgress() {
+            const total = state.cards.length;
+            const current = total === 0 ? 0 : state.currentIndex + 1;
+            const percent = total === 0 ? 0 : (current / total) * 100;
+            progressFill.style.width = `${percent}%`;
+            const text = total === 0 ? '0 / 0' : `${current} / ${total}`;
+            progressText.textContent = text;
+            counterDisplay.textContent = text;
+        }
+
+        function updateButtons() {
+            const total = state.cards.length;
+            prevBtn.disabled = total === 0 || state.currentIndex === 0;
+            nextBtn.disabled = total === 0 || state.currentIndex === total - 1;
+        }
+
+        function flipCard() {
+            if (!state.cards.length) return;
+            state.isFlipped = !state.isFlipped;
+            cardEl.classList.toggle('flipped', state.isFlipped);
+        }
+
+        function prevCard() {
+            if (state.currentIndex > 0) {
+                state.currentIndex--;
+                state.isFlipped = false;
+                cardEl.classList.remove('flipped');
+                renderCard();
+            }
+        }
+
+        function nextCard() {
+            if (state.currentIndex < state.cards.length - 1) {
+                state.currentIndex++;
+                state.isFlipped = false;
+                cardEl.classList.remove('flipped');
+                renderCard();
+            }
+        }
+
+        // ============================================================
+        //  4. 初始化 & 事件绑定
+        // ============================================================
+
+        function init() {
+            state.allCards = CARD_DATA.map(c => ({ ...c }));
+            loadFavorites();
+
+            state.shuffled = true;
+            toggleShuffle.classList.add('active');
+
+            rebuildCardList();
+
+            cardEl.addEventListener('click', (e) => {
+                if (e.target.closest('button') || e.target.closest('a')) return;
+                flipCard();
+            });
+
+            prevBtn.addEventListener('click', prevCard);
+            nextBtn.addEventListener('click', nextCard);
+
+            favBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleFavorite();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') prevCard();
+                if (e.key === 'ArrowRight') nextCard();
+                if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    flipCard();
+                }
+                if (e.key === 'f' || e.key === 'F') {
+                    e.preventDefault();
+                    toggleFavorite();
+                }
+            });
+
+            toggleShuffle.addEventListener('click', () => {
+                state.shuffled = !state.shuffled;
+                toggleShuffle.classList.toggle('active', state.shuffled);
+                rebuildCardList();
+            });
+
+            toggleFavView.addEventListener('click', () => {
+                state.favView = !state.favView;
+                toggleFavView.classList.toggle('active', state.favView);
+                if (state.favView && state.favorites.size === 0) {
+                    state.favView = false;
+                    toggleFavView.classList.remove('active');
+                    rebuildCardList();
+                    setTimeout(() => {
+                        alert('📭 还没有收藏任何卡片，请先收藏一些题目吧！');
+                    }, 100);
+                    return;
+                }
+                rebuildCardList();
+            });
+
+            if (state.favView) {
+                toggleFavView.classList.add('active');
+            }
+
+            let lastTap = 0;
+            document.addEventListener('touchend', (e) => {
+                const now = Date.now();
+                if (now - lastTap < 300 && e.target.closest('.card')) {
+                    flipCard();
+                }
+                lastTap = now;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+</body>
+</html>
